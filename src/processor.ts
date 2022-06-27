@@ -84,7 +84,7 @@ const SAVE_PERIOD = 12 * 60 * 60 * 1000
 let lastStateTimestamp: number | undefined
 
 async function getLastChainState(store: Store) {
-    return await store.get(ChainState, {
+    return await store.findOne(ChainState, {
         order: {
             timestamp: 'DESC',
         },
