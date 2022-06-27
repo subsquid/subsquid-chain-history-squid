@@ -28,11 +28,11 @@ export async function saveChainState(ctx: BatchContext<Store, unknown>, block: S
     state.democracyProposals = (await getDemocracyProposalsCount(ctx, block)) || 0
     state.tokenBalance = (await getTotalIssuance(ctx, block)) || 0n
 
-    state.tokenHolders = await ctx.store.count(Account, { where: { updatedAt: MoreThan(0) } })
+    state.tokenHolders = await ctx.store.count(Account)
 
     await ctx.store.insert(state)
 
-    console.log(`Chain state updated at block ${block.height}`)
+    ctx.log.child('state').info(`updated at block ${block.height}`)
 }
 
 async function getCouncilMembers(ctx: ChainContext, block: Block) {

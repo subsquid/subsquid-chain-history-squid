@@ -84,7 +84,8 @@ const SAVE_PERIOD = 12 * 60 * 60 * 1000
 let lastStateTimestamp: number | undefined
 
 async function getLastChainState(store: Store) {
-    return await store.findOne(ChainState, {
+    return await store.get(ChainState, {
+        where: {},
         order: {
             timestamp: 'DESC',
         },
@@ -131,26 +132,34 @@ async function saveAccounts(ctx: Context, block: SubstrateBlock, accountIds: Uin
     }
 
     const accounts = new Map<string, Account>()
+    const deletions = new Map<string, Account>()
 
     for (let i = 0; i < accountIds.length; i++) {
         const id = encodeId(accountIds[i])
         const balance = balances[i]
+
         if (!balance) continue
-        accounts.set(
-            id,
-            new Account({
+        const total = balance.free + balance.reserved
+        if (total > 0n) {
+            accounts.set(
                 id,
-                free: balance.free,
-                reserved: balance.reserved,
-                total: balance.free + balance.reserved,
-                updatedAt: block.height,
-            })
-        )
+                new Account({
+                    id,
+                    free: balance.free,
+                    reserved: balance.reserved,
+                    total,
+                    updatedAt: block.height,
+                })
+            )
+        } else {
+            deletions.set(id, new Account({ id }))
+        }
     }
 
     await ctx.store.save([...accounts.values()])
+    await ctx.store.remove([...deletions.values()])
 
-    ctx.log.child('accounts').info(`updated: ${accounts.size}`)
+    ctx.log.child('accounts').info(`updated: ${accounts.size}, deleted: ${deletions.size}`)
 }
 
 function processBalancesCallItem(ctx: Context, item: CallItem, accountIdsHex: Set<string>) {
