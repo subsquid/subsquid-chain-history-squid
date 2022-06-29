@@ -11,7 +11,7 @@ import {
     toHex,
 } from '@subsquid/substrate-processor'
 import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
-import { saveChainState } from './chainState'
+import { saveCurrentChainState, saveRegularChainState } from './chainState'
 import { Account, ChainState } from './model'
 import {
     BalancesBalanceSetEvent,
@@ -106,7 +106,7 @@ async function processBalances(ctx: Context): Promise<void> {
             const accountIdsU8 = [...accountIdsHex].map((id) => decodeHex(id))
 
             await saveAccounts(ctx, block.header, accountIdsU8)
-            await saveChainState(ctx, block.header)
+            await saveRegularChainState(ctx, block.header)
 
             lastStateTimestamp = block.header.timestamp
             accountIdsHex.clear()
@@ -117,6 +117,7 @@ async function processBalances(ctx: Context): Promise<void> {
     const accountIdsU8 = [...accountIdsHex].map((id) => decodeHex(id))
 
     await saveAccounts(ctx, block.header, accountIdsU8)
+    await saveCurrentChainState(ctx, block.header)
 }
 
 async function saveAccounts(ctx: Context, block: SubstrateBlock, accountIds: Uint8Array[]) {
