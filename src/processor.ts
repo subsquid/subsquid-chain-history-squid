@@ -24,19 +24,14 @@ import {
     BalancesUnreservedEvent,
     BalancesWithdrawEvent,
 } from './types/generated/events'
-import {
-    BalancesAccountStorage,
-    BalancesFreeBalanceStorage,
-    BalancesReservedBalanceStorage,
-    SystemAccountStorage,
-} from './types/generated/storage'
+import { BalancesAccountStorage, SystemAccountStorage } from './types/generated/storage'
 import { Event, Block, ChainContext } from './types/generated/support'
 
 const processor = new SubstrateBatchProcessor()
     .setBatchSize(500)
     .setDataSource({
-        archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://polkadot.archive.subsquid.io/graphql',
+        chain: 'wss://rpc.polkadot.io',
     })
     .setBlockRange({
         from: 0,
@@ -227,10 +222,10 @@ function processBalancesEventItem(ctx: Context, item: EventItem, accountIdsHex: 
 function getBalanceSetAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesBalanceSetEvent(ctx, event)
 
-    if (data.isV1031) {
-        return toHex(data.asV1031[0])
-    } else if (data.isV9130) {
-        return toHex(data.asV9130.who)
+    if (data.isV0) {
+        return toHex(data.asV0[0])
+    } else if (data.isV9140) {
+        return toHex(data.asV9140.who)
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -239,12 +234,10 @@ function getBalanceSetAccount(ctx: ChainContext, event: Event) {
 function getTransferAccounts(ctx: ChainContext, event: Event) {
     const data = new BalancesTransferEvent(ctx, event)
 
-    if (data.isV1020) {
-        return [toHex(data.asV1020[0]), toHex(data.asV1020[1])]
-    } else if (data.isV1050) {
-        return [toHex(data.asV1050[0]), toHex(data.asV1050[1])]
-    } else if (data.isV9130) {
-        return [toHex(data.asV9130.from), toHex(data.asV9130.to)]
+    if (data.isV0) {
+        return [toHex(data.asV0[0]), toHex(data.asV0[1])]
+    } else if (data.isV9140) {
+        return [toHex(data.asV9140.from), toHex(data.asV9140.to)]
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -253,10 +246,10 @@ function getTransferAccounts(ctx: ChainContext, event: Event) {
 function getEndowedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesEndowedEvent(ctx, event)
 
-    if (data.isV1050) {
-        return toHex(data.asV1050[0])
-    } else if (data.isV9130) {
-        return toHex(data.asV9130.account)
+    if (data.isV0) {
+        return toHex(data.asV0[0])
+    } else if (data.isV9140) {
+        return toHex(data.asV9140.account)
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -265,10 +258,10 @@ function getEndowedAccount(ctx: ChainContext, event: Event) {
 function getDepositAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesDepositEvent(ctx, event)
 
-    if (data.isV1032) {
-        return toHex(data.asV1032[0])
-    } else if (data.isV9130) {
-        return toHex(data.asV9130.who)
+    if (data.isV0) {
+        return toHex(data.asV0[0])
+    } else if (data.isV9140) {
+        return toHex(data.asV9140.who)
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -277,10 +270,10 @@ function getDepositAccount(ctx: ChainContext, event: Event) {
 function getReservedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesReservedEvent(ctx, event)
 
-    if (data.isV2008) {
-        return toHex(data.asV2008[0])
-    } else if (data.isV9130) {
-        return toHex(data.asV9130.who)
+    if (data.isV10) {
+        return toHex(data.asV10[0])
+    } else if (data.isV9140) {
+        return toHex(data.asV9140.who)
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -289,10 +282,10 @@ function getReservedAccount(ctx: ChainContext, event: Event) {
 function getUnreservedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesUnreservedEvent(ctx, event)
 
-    if (data.isV2008) {
-        return toHex(data.asV2008[0])
-    } else if (data.isV9130) {
-        return toHex(data.asV9130.who)
+    if (data.isV10) {
+        return toHex(data.asV10[0])
+    } else if (data.isV9140) {
+        return toHex(data.asV9140.who)
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -303,8 +296,8 @@ function getWithdrawAccount(ctx: ChainContext, event: Event) {
 
     if (data.isV9122) {
         return toHex(data.asV9122[0])
-    } else if (data.isV9130) {
-        return toHex(data.asV9130.who)
+    } else if (data.isV9140) {
+        return toHex(data.asV9140.who)
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -315,8 +308,8 @@ function getSlashedAccount(ctx: ChainContext, event: Event) {
 
     if (data.isV9122) {
         return toHex(data.asV9122[0])
-    } else if (data.isV9130) {
-        return toHex(data.asV9130.who)
+    } else if (data.isV9140) {
+        return toHex(data.asV9140.who)
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -325,10 +318,10 @@ function getSlashedAccount(ctx: ChainContext, event: Event) {
 function getReserveRepatriatedAccounts(ctx: ChainContext, event: Event) {
     const data = new BalancesReserveRepatriatedEvent(ctx, event)
 
-    if (data.isV2008) {
-        return [toHex(data.asV2008[0]), toHex(data.asV2008[1])]
-    } else if (data.isV9130) {
-        return [toHex(data.asV9130.from), toHex(data.asV9130.to)]
+    if (data.isV10) {
+        return [toHex(data.asV10[0]), toHex(data.asV10[1])]
+    } else if (data.isV9140) {
+        return [toHex(data.asV9140.from), toHex(data.asV9140.to)]
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -346,8 +339,7 @@ async function getBalances(
 ): Promise<(Balance | undefined)[] | undefined> {
     return (
         (await getSystemAccountBalances(ctx, block, accounts)) ||
-        (await getBalancesAccountBalances(ctx, block, accounts)) ||
-        (await getBalancesAccountBalancesOld(ctx, block, accounts))
+        (await getBalancesAccountBalances(ctx, block, accounts))
     )
 }
 
@@ -363,22 +355,6 @@ async function getBalancesAccountBalances(ctx: ChainContext, block: Block, accou
     )
 
     return data.map((d) => ({ free: d.free, reserved: d.reserved }))
-}
-
-async function getBalancesAccountBalancesOld(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
-    const storageFree = new BalancesFreeBalanceStorage(ctx, block)
-
-    const dataFree = storageFree.isExists
-        ? await storageFree.getManyAsV1020(accounts)
-        : new Array(accounts.length).fill(0n)
-
-    const storageReserved = new BalancesReservedBalanceStorage(ctx, block)
-
-    const dataReserved = storageReserved.isExists
-        ? await storageReserved.getManyAsV1020(accounts)
-        : new Array(accounts.length).fill(0n)
-
-    return dataFree.map((f, i) => ({ free: f, reserved: dataReserved[i] }))
 }
 
 async function getSystemAccountBalances(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
