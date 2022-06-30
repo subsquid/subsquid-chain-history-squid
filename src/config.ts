@@ -1,14 +1,14 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'moonbeam',
+    prefix: 'moonbeam',
     dataSource: {
-        archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://moonbeam.archive.subsquid.io/graphql',
+        chain: 'wss://moonbeam.api.onfinality.io/public-ws',
     },
-    typesBundle: 'kusama',
-    batchSize: 100,
+    typesBundle: 'moonbeam',
+    batchSize: 500,
     // blockRange: {
     //     from: 7567700,
     // },
