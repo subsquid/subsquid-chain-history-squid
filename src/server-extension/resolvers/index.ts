@@ -2,6 +2,9 @@ import { Field, ObjectType, Query, Resolver } from 'type-graphql'
 import 'reflect-metadata'
 import type { EntityManager } from 'typeorm'
 import { CurrentChainState } from '../../model'
+import assert from 'assert'
+import chains from '../../chains'
+import config from '../../config'
 
 @ObjectType()
 export class Token {
@@ -24,8 +27,17 @@ export class ChainInfo {
     @Field(() => String, { nullable: false })
     name!: string
 
+    @Field(() => String, { nullable: false })
+    displayName!: string
+
     @Field(() => [Token], { nullable: false })
     tokens!: Token[]
+
+    @Field(() => Number, { nullable: true })
+    paraId!: number | null
+
+    @Field(() => String, { nullable: true })
+    relayChain!: string | null
 
     constructor(props?: Partial<ChainInfo>) {
         Object.assign(this, props)
@@ -60,20 +72,23 @@ class ChainStateObject {
     blockNumber!: number
 }
 
-// @Resolver()
-// export class ChainInfoResolver {
-//     @Query(() => ChainInfo)
-//     chainInfo(): ChainInfo {
-//         const info = chains.find((ch) => ch.name === config.chainName)
-//         assert(info != null)
+@Resolver()
+export class ChainInfoResolver {
+    @Query(() => ChainInfo)
+    chainInfo(): ChainInfo {
+        const info = chains.find((ch) => ch.name === config.chainName)
+        assert(info != null)
 
-//         return new ChainInfo({
-//             prefix: info.prefix,
-//             name: info.name,
-//             tokens: info.tokens.map(({ symbol, decimals }) => new Token({ symbol, decimals })),
-//         })
-//     }
-// }
+        return new ChainInfo({
+            prefix: info.prefix,
+            name: info.name,
+            relayChain: info.relay,
+            paraId: info.paraId,
+            displayName: info.displayName,
+            tokens: info.tokens.map(({ symbol, decimals }) => new Token({ symbol, decimals })),
+        })
+    }
+}
 
 @Resolver()
 export class ChainStateResolver {
