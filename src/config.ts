@@ -1,13 +1,13 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'hydradx',
+    prefix: 'hydradx',
     dataSource: {
-        archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://hydradx-snakenet.archive.subsquid.io/graphql',
+        chain: 'wss://archive.snakenet.hydradx.io',
     },
-    typesBundle: 'kusama',
+    typesBundle: 'hydradx',
     batchSize: 100,
     // blockRange: {
     //     from: 7567700,
