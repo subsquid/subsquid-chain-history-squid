@@ -8,7 +8,7 @@ const config: ProcessorConfig = {
         chain: 'wss://rpc.crust.network',
     },
     typesBundle: 'crust',
-    batchSize: 100,
+    batchSize: 500,
     // blockRange: {
     //     from: 7567700,
     // },
