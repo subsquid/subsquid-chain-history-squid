@@ -1,14 +1,14 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'acala',
+    prefix: 'acala',
     dataSource: {
-        archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://acala.archive.subsquid.io/graphql',
+        chain: 'wss://acala-polkadot.api.onfinality.io/public-ws',
     },
-    typesBundle: 'kusama',
-    batchSize: 100,
+    typesBundle: 'acala',
+    batchSize: 500,
     // blockRange: {
     //     from: 7567700,
     // },

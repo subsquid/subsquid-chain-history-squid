@@ -4,11 +4,9 @@ import { Account, ChainState, CurrentChainState } from './model'
 import { UnknownVersionError } from './processor'
 import {
     BalancesTotalIssuanceStorage,
-    CouncilMembersStorage,
-    CouncilProposalCountStorage,
+    GeneralCouncilMembersStorage,
+    GeneralCouncilProposalCountStorage,
     DemocracyPublicPropCountStorage,
-    Instance1CollectiveMembersStorage,
-    Instance1CollectiveProposalCountStorage,
 } from './types/generated/storage'
 // import { PERIOD } from './consts/consts'
 import { Block, ChainContext } from './types/generated/support'
@@ -45,44 +43,22 @@ export async function saveCurrentChainState(ctx: BatchContext<Store, unknown>, b
 }
 
 async function getCouncilMembers(ctx: ChainContext, block: Block) {
-    const storage = new CouncilMembersStorage(ctx, block)
-    if (!storage.isExists) return await getInstance1Members(ctx, block)
-
-    if (storage.isV9111) {
-        return await storage.getAsV9111()
-    }
-
-    throw new UnknownVersionError(storage.constructor.name)
-}
-
-async function getInstance1Members(ctx: ChainContext, block: Block) {
-    const storage = new Instance1CollectiveMembersStorage(ctx, block)
+    const storage = new GeneralCouncilMembersStorage(ctx, block)
     if (!storage.isExists) return undefined
 
-    if (storage.isV1020) {
-        return await storage.getAsV1020()
+    if (storage.isV2000) {
+        return await storage.getAsV2000()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
 }
 
 async function getCouncilProposalsCount(ctx: ChainContext, block: Block) {
-    const storage = new CouncilProposalCountStorage(ctx, block)
-    if (!storage.isExists) return await getInstance1ProposalsCount(ctx, block)
-
-    if (storage.isV9111) {
-        return await storage.getAsV9111()
-    }
-
-    throw new UnknownVersionError(storage.constructor.name)
-}
-
-async function getInstance1ProposalsCount(ctx: ChainContext, block: Block) {
-    const storage = new Instance1CollectiveProposalCountStorage(ctx, block)
+    const storage = new GeneralCouncilProposalCountStorage(ctx, block)
     if (!storage.isExists) return undefined
 
-    if (storage.isV1020) {
-        return await storage.getAsV1020()
+    if (storage.isV2000) {
+        return await storage.getAsV2000()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -92,8 +68,8 @@ async function getDemocracyProposalsCount(ctx: ChainContext, block: Block) {
     const storage = new DemocracyPublicPropCountStorage(ctx, block)
     if (!storage.isExists) return undefined
 
-    if (storage.isV1020) {
-        return await storage.getAsV1020()
+    if (storage.isV2000) {
+        return await storage.getAsV2000()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -103,8 +79,8 @@ async function getTotalIssuance(ctx: ChainContext, block: Block) {
     const storage = new BalancesTotalIssuanceStorage(ctx, block)
     if (!storage.isExists) return undefined
 
-    if (storage.isV1020) {
-        return await storage.getAsV1020()
+    if (storage.isV2000) {
+        return await storage.getAsV2000()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
