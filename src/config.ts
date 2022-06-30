@@ -5,7 +5,7 @@ const config: ProcessorConfig = {
     prefix: 'acala',
     dataSource: {
         archive: 'https://acala.archive.subsquid.io/graphql',
-        chain: 'wss://acala-polkadot.api.onfinality.io/public-ws',
+        chain: 'wss://acala-rpc-2.aca-api.network/ws',
     },
     typesBundle: 'acala',
     batchSize: 500,
