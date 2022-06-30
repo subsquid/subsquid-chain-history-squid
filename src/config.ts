@@ -5,7 +5,7 @@ const config: ProcessorConfig = {
     prefix: 'moonriver',
     dataSource: {
         archive: 'https://moonriver.archive.subsquid.io/graphql',
-        chain: 'wss://moonriver.api.onfinality.io/public-ws',
+        chain: 'wss://rpc.pinknode.io/moonriver/6e3fa591-e24f-483a-95fa-1d773f7f2be3',
     },
     typesBundle: 'moonriver',
     batchSize: 500,
