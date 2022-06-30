@@ -12,6 +12,7 @@ import {
 } from '@subsquid/substrate-processor'
 import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
 import { saveCurrentChainState, saveRegularChainState } from './chainState'
+import config from './config'
 import { Account, ChainState } from './model'
 import {
     BalancesBalanceSetEvent,
@@ -28,14 +29,9 @@ import { BalancesAccountStorage, SystemAccountStorage } from './types/generated/
 import { Event, Block, ChainContext } from './types/generated/support'
 
 const processor = new SubstrateBatchProcessor()
-    .setBatchSize(500)
-    .setDataSource({
-        archive: 'https://polkadot.archive.subsquid.io/graphql',
-        chain: 'wss://rpc.polkadot.io',
-    })
-    .setBlockRange({
-        from: 0,
-    })
+    .setBatchSize(config.batchSize || 500)
+    .setDataSource(config.dataSource)
+    .setBlockRange(config.blockRange || { from: 0 })
     .addEvent('Balances.Endowed', {
         data: { event: { args: true } },
     } as const)
