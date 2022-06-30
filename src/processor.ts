@@ -408,5 +408,5 @@ export function getOriginAccountId(origin: any) {
 }
 
 export function encodeId(id: Uint8Array) {
-    return ss58.codec('kusama').encode(id)
+    return ss58.codec(config.prefix).encode(id)
 }
