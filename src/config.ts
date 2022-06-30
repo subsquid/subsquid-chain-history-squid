@@ -5,7 +5,7 @@ const config: ProcessorConfig = {
     prefix: 'karura',
     dataSource: {
         archive: 'https://karura.archive.subsquid.io/graphql',
-        chain: 'wss://karura.api.onfinality.io/public-ws',
+        chain: 'wss://karura-rpc-2.aca-api.network/ws',
     },
     typesBundle: 'karura',
     batchSize: 500,
