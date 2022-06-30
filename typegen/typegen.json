@@ -1,7 +1,7 @@
 {
   "outDir": "../src/types/generated",
   "specVersions": "./versions.jsonl",
-  "typesBundle": "kusama",
+  "typesBundle": "karura",
   "events": [
     "Balances.Transfer",
     "Balances.Endowed",
@@ -16,16 +16,13 @@
   "calls": [
   ],
   "storage": [
-    "System.AccountNonce",
     "System.Account",
     "Balances.Account",
-    "Council.Members",
-    "Council.ProposalCount",
+    "GeneralCouncil.Members",
+    "GeneralCouncil.ProposalCount",
     "Instance1Collective.Members",
     "Instance1Collective.ProposalCount",
     "Democracy.PublicPropCount",
-    "Balances.TotalIssuance",
-    "Balances.FreeBalance",
-    "Balances.ReservedBalance"
+    "Balances.TotalIssuance"
   ]
 }

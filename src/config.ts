@@ -1,14 +1,14 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'karura',
+    prefix: 'karura',
     dataSource: {
-        archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://karura.archive.subsquid.io/graphql',
+        chain: 'wss://karura.api.onfinality.io/public-ws',
     },
-    typesBundle: 'kusama',
-    batchSize: 100,
+    typesBundle: 'karura',
+    batchSize: 500,
     // blockRange: {
     //     from: 7567700,
     // },
