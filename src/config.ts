@@ -1,13 +1,13 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'crust',
+    prefix: 'crust',
     dataSource: {
-        archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://crust.archive.subsquid.io/graphql',
+        chain: 'wss://rpc.crust.network',
     },
-    typesBundle: 'kusama',
+    typesBundle: 'crust',
     batchSize: 100,
     // blockRange: {
     //     from: 7567700,
