@@ -86,6 +86,8 @@ async function getLastChainState(store: Store) {
 async function processBalances(ctx: Context): Promise<void> {
     const accountIdsHex = new Set<string>()
 
+    await reEncodeIds(ctx)
+
     for (const block of ctx.blocks) {
         for (const item of block.items) {
             if (item.kind === 'call') {
@@ -384,5 +386,34 @@ export function getOriginAccountId(origin: any) {
 }
 
 export function encodeId(id: Uint8Array) {
-    return ss58.codec('kusama').encode(id)
+    return ss58.codec(config.prefix).encode(id)
+}
+
+let isFixed = false
+
+async function reEncodeIds(ctx: Context) {
+    if (isFixed) return
+
+    const count = await ctx.store.count(Account)
+    const step = 10000
+
+    const newAccounts: Account[] = []
+
+    for (let i = 0; i < count; i += step) {
+        const batch = await ctx.store.find(Account, { where: {}, take: step })
+        newAccounts.push(
+            ...batch.map(
+                (a) =>
+                    new Account({
+                        ...a,
+                        id: encodeId(ss58.decode(a.id).bytes),
+                    })
+            )
+        )
+        await ctx.store.remove(batch)
+    }
+
+    await ctx.store.save(newAccounts)
+    isFixed = true
+    ctx.log.warn('Accounts updated')
 }
