@@ -5,7 +5,7 @@ const config: ProcessorConfig = {
     prefix: 'crust',
     dataSource: {
         archive: 'https://crust.archive.subsquid.io/graphql',
-        chain: 'wss://rpc.crust.network',
+        chain: 'wss://crust.api.onfinality.io/ws?apikey=0572033a-a43f-4334-9a78-205e82e45c31',
     },
     typesBundle: 'crust',
     batchSize: 500,
