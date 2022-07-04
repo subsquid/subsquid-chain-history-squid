@@ -105,7 +105,7 @@ async function processBalances(ctx: Context): Promise<void> {
     const accountIdsU8 = [...accountIdsHex].map((id) => decodeHex(id))
 
     await saveAccounts(ctx, block.header, accountIdsU8)
-    await saveCurrentChainState(ctx, block.header)
+    // await saveCurrentChainState(ctx, block.header)
 }
 
 async function saveAccounts(ctx: Context, block: SubstrateBlock, accountIds: Uint8Array[]) {
