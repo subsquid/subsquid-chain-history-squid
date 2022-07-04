@@ -8,7 +8,7 @@ const config: ProcessorConfig = {
         chain: 'wss://acala-rpc-2.aca-api.network/ws',
     },
     typesBundle: 'acala',
-    batchSize: 500,
+    batchSize: 100,
     // blockRange: {
     //     from: 7567700,
     // },
