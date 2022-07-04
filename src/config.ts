@@ -5,13 +5,13 @@ const config: ProcessorConfig = {
     prefix: 'crust',
     dataSource: {
         archive: 'https://crust.archive.subsquid.io/graphql',
-        chain: 'wss://crust.api.onfinality.io/ws?apikey=0572033a-a43f-4334-9a78-205e82e45c31',
+        chain: 'wss://rpc.crust.network',
     },
     typesBundle: 'crust',
-    batchSize: 500,
-    // blockRange: {
-    //     from: 7567700,
-    // },
+    batchSize: 100,
+    blockRange: {
+        from: 1432567,
+    },
 }
 
 export default config
