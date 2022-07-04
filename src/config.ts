@@ -5,7 +5,7 @@ const config: ProcessorConfig = {
     prefix: 'bifrost',
     dataSource: {
         archive: 'https://bifrost.archive.subsquid.io/graphql',
-        chain: 'wss://eu.bifrost-rpc.liebi.com',
+        chain: 'wss://eu.bifrost-rpc.liebi.com/ws',
     },
     typesBundle: 'bifrost',
     batchSize: 500,
