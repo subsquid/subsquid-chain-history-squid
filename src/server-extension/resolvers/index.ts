@@ -1,7 +1,7 @@
 import { Field, ObjectType, Query, Resolver } from 'type-graphql'
 import 'reflect-metadata'
 import type { EntityManager } from 'typeorm'
-import { CurrentChainState } from '../../model'
+import { ChainState, CurrentChainState } from '../../model'
 import assert from 'assert'
 import chains from '../../chains'
 import config from '../../config'
@@ -97,9 +97,9 @@ export class ChainStateResolver {
     @Query(() => ChainStateObject)
     async currentChainState(): Promise<ChainStateObject | null> {
         const manager = await this.tx()
-        const repository = manager.getRepository(CurrentChainState)
+        const repository = manager.getRepository(ChainState)
 
-        const state = await repository.findOneBy({ id: '0' })
+        const state = await repository.findOne({ where: {}, order: { blockNumber: 'DESC' } })
         return state != null ? new ChainStateObject({ ...state }) : null
     }
 }
