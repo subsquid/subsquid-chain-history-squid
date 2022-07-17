@@ -1,13 +1,13 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'phala',
+    prefix: 'phala',
     dataSource: {
-        archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://phala.archive.subsquid.io/graphql',
+        chain: 'wss://api.phala.network/ws',
     },
-    typesBundle: 'kusama',
+    typesBundle: 'khala',
     batchSize: 100,
     // blockRange: {
     //     from: 7567700,
