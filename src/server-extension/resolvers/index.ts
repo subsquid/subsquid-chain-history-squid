@@ -1,10 +1,12 @@
-import { Field, ObjectType, Query, Resolver } from 'type-graphql'
+import { Arg, Field, ObjectType, Query, Resolver } from 'type-graphql'
 import 'reflect-metadata'
 import type { EntityManager } from 'typeorm'
-import { CurrentChainState } from '../../model'
+import { Account as Account_, CurrentChainState } from '../../model'
 import assert from 'assert'
 import chains from '../../chains'
 import config from '../../config'
+import { ID } from '@subsquid/graphql-server'
+import { Int } from '@subsquid/graphql-server/lib/scalars'
 
 @ObjectType()
 export class Token {
@@ -101,5 +103,68 @@ export class ChainStateResolver {
 
         const state = await repository.findOneBy({ id: '0' })
         return state != null ? new ChainStateObject({ ...state }) : null
+    }
+}
+
+@ObjectType()
+class Account implements Account_ {
+    constructor(props?: Partial<Account>) {
+        Object.assign(this, props)
+    }
+
+    @Field(() => ID, { nullable: false })
+    id!: string
+
+    @Field(() => BigInt, { nullable: false })
+    free!: bigint
+
+    @Field(() => BigInt, { nullable: false })
+    reserved!: bigint
+
+    @Field(() => BigInt, { nullable: false })
+    total!: bigint
+
+    @Field(() => Int, { nullable: false })
+    updatedAt!: number | null | undefined
+}
+
+@ObjectType()
+class RankedAccount {
+    constructor(props?: Partial<RankedAccount>) {
+        Object.assign(this, props)
+    }
+
+    @Field(() => Number, { nullable: false })
+    rank!: number
+
+    @Field(() => Account, { nullable: false })
+    account!: Account
+}
+
+@Resolver()
+export class AccountRank {
+    constructor(private tx: () => Promise<EntityManager>) {}
+
+    @Query(() => RankedAccount)
+    async rankAccount(
+        @Arg('id', { nullable: false })
+        id: string
+    ): Promise<RankedAccount | null> {
+        const manager = await this.tx()
+        const repository = manager.getRepository(Account_)
+
+        const data = (
+            await repository.query(
+                `SELECT * FROM (SELECT *, RANK() OVER (ORDER BY total DESC) FROM account) as ranked WHERE id = '${id}'`
+            )
+        )?.[0]
+        console.log(data)
+        if (data != null) {
+            data.updatedAt = data['updated_at']
+            const { rank, ...account } = data
+            return new RankedAccount({ rank, account: new Account(account) })
+        } else {
+            return null
+        }
     }
 }

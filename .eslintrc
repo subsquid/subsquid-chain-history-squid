@@ -4,7 +4,6 @@
     "project": "./tsconfig.json"
   },
   "plugins": [
-    "sonarjs"
   ],
   "rules": {
     "max-len": [
@@ -19,7 +18,6 @@
   },
   "extends": [
     "plugin:@typescript-eslint/recommended",
-    "plugin:sonarjs/recommended",
     "plugin:prettier/recommended",
     "prettier"
   ],

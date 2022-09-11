@@ -2,7 +2,7 @@ type Account @entity {
   id: ID!
   free: BigInt!
   reserved: BigInt!
-  total: BigInt!
+  total: BigInt! @index
   updatedAt: Int
 }
 
