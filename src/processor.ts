@@ -398,10 +398,14 @@ export class UnknownVersionError extends Error {
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getOriginAccountId(origin: any) {
+export function getOriginAccountId(origin: any): string | undefined {
     if (origin && origin.__kind === 'system' && origin.value.__kind === 'Signed') {
-        return origin.value.value
+        const id = origin.value.value
+        if (id.__kind === 'Id') {
+            return id.value
+        } else {
+            return id
+        }
     } else {
         return undefined
     }
