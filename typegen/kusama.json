@@ -1,0 +1,29 @@
+{
+    "outDir": "../src/types/kusama",
+    "specVersions": "https://kusama.archive.subsquid.io/graphql",
+    "events": [
+        "Balances.Transfer",
+        "Balances.Endowed",
+        "Balances.BalanceSet",
+        "Balances.Reserved",
+        "Balances.Unreserved",
+        "Balances.ReserveRepatriated",
+        "Balances.Deposit",
+        "Balances.Withdraw",
+        "Balances.Slashed"
+    ],
+    "calls": [],
+    "storage": [
+        "System.AccountNonce",
+        "System.Account",
+        "Balances.Account",
+        "Council.Members",
+        "Council.ProposalCount",
+        "Instance1Collective.Members",
+        "Instance1Collective.ProposalCount",
+        "Democracy.PublicPropCount",
+        "Balances.TotalIssuance",
+        "Balances.FreeBalance",
+        "Balances.ReservedBalance"
+    ]
+}

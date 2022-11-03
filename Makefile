@@ -1,5 +1,5 @@
-process: migrate
-	@node -r dotenv/config lib/processor.js
+kusama: migrate
+	@set CHAIN=kusama&& node -r dotenv/config lib/processor.js
 
 
 serve:

@@ -4,7 +4,7 @@ import type { EntityManager } from 'typeorm'
 import { CurrentChainState } from '../../model'
 import assert from 'assert'
 import chains from '../../chains'
-import config from '../../config'
+import config from '../../config/kusama'
 
 @ObjectType()
 export class Token {
