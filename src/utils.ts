@@ -3,7 +3,12 @@ import {decodeHex, toHex} from '@subsquid/substrate-processor'
 
 export function getOriginAccountId(origin: any) {
     if (origin && origin.__kind === 'system' && origin.value.__kind === 'Signed') {
-        return decodeHex(origin.value.value)
+        const id = origin.value.value
+        if (id.__kind === 'Id') {
+            return decodeHex(id.value)
+        } else {
+            return decodeHex(id)
+        }
     } else {
         return undefined
     }
