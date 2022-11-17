@@ -4,23 +4,23 @@ import {ProcessorConfig} from './processorConfig'
 export function getChain(): {config: ProcessorConfig; getters: ChainGetters} {
     switch (process.env.CHAIN) {
         case 'kusama':
-            return require('./kusama').default
+            return require('./kusama')
         case 'polkadot':
-            return require('./polkadot').default
+            return require('./polkadot')
         case 'acala':
-            return require('./acala').default
+            return require('./acala')
         case 'karura':
-            return require('./karura').default
+            return require('./karura')
         case 'moonriver':
-            return require('./moonriver').default
+            return require('./moonriver')
         case 'moonbeam':
-            return require('./moonbeam').default
+            return require('./moonbeam')
         case 'crust':
-            return require('./crust').default
+            return require('./crust')
         case 'bifrost':
-            return require('./bifrost').default
+            return require('./bifrost')
         case 'phala':
-            return require('./phala').default
+            return require('./phala')
         default:
             throw new Error(`Unsupported chain ${process.env.CHAIN}`)
     }

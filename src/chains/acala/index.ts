@@ -1,2 +1,4 @@
-export * from './getters'
-export * from './config'
+import {getters} from './getters'
+import {config} from './config'
+
+export {config, getters}

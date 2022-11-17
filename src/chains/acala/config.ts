@@ -1,6 +1,6 @@
 import {ProcessorConfig} from '../processorConfig'
 
-const config: ProcessorConfig = {
+export const config: ProcessorConfig = {
     chainName: 'kusama',
     prefix: 'kusama',
     dataSource: {
@@ -11,5 +11,3 @@ const config: ProcessorConfig = {
     //     from: 7567700,
     // },
 }
-
-export default config

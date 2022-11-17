@@ -1,6 +1,6 @@
 import {ProcessorConfig} from '../processorConfig'
 
-const config: ProcessorConfig = {
+export const config: ProcessorConfig = {
     chainName: 'polkadot',
     prefix: 'polkadot',
     dataSource: {
@@ -8,5 +8,3 @@ const config: ProcessorConfig = {
         chain: 'wss://rpc.polkadot.io',
     },
 }
-
-export default config

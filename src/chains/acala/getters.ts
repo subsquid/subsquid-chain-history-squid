@@ -199,7 +199,7 @@ export async function getTotalIssuance(ctx: ChainContext, block: Block) {
     throw new UnknownVersionError(storage.constructor.name)
 }
 
-const getters: ChainGetters = {
+export const getters: ChainGetters = {
     events: {
         getBalanceSetAccount,
         getTransferAccounts,
@@ -220,5 +220,3 @@ const getters: ChainGetters = {
         getTotalIssuance,
     },
 }
-
-export default getters

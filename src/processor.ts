@@ -137,7 +137,7 @@ async function saveAccounts(ctx: Context, block: SubstrateBlock, accountIds: str
 
 function processBalancesCallItem(ctx: Context, item: CallItem) {
     const id = getOriginAccountId(item.call.origin)
-    return id ? encodeId(id) : undefined
+    return id ? encodeId(id, config.prefix) : undefined
 }
 
 function processBalancesEventItem(ctx: Context, item: EventItem) {
@@ -189,7 +189,7 @@ function processBalancesEventItem(ctx: Context, item: EventItem) {
             break
         }
     }
-    return ids.map((id) => encodeId(id))
+    return ids.map((id) => encodeId(id, config.prefix))
 }
 
 interface Balance {
@@ -202,7 +202,7 @@ async function getBalances(
     block: SubstrateBlock,
     accountIds: string[]
 ): Promise<(Balance | undefined)[] | undefined> {
-    const accountIdsU8 = [...accountIds].map((id) => decodeId(id))
+    const accountIdsU8 = [...accountIds].map((id) => decodeId(id, config.prefix))
     return (
         (await getters.storage.getSystemAccountBalances(ctx, block, accountIdsU8)) ||
         (await getters.storage.getBalancesAccountBalances(ctx, block, accountIdsU8))

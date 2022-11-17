@@ -4,7 +4,7 @@ import type {EntityManager} from 'typeorm'
 import {ChainState} from '../../model'
 import assert from 'assert'
 import chains from '../../chainsInfo'
-import config from '../../chains/kusama/config'
+import {getChain} from '../../chains'
 
 @ObjectType()
 export class Token {
@@ -76,7 +76,7 @@ class ChainStateObject {
 export class ChainInfoResolver {
     @Query(() => ChainInfo)
     chainInfo(): ChainInfo {
-        const info = chains.find((ch) => ch.name === config.chainName)
+        const info = chains.find((ch) => ch.name === getChain().config.chainName)
         assert(info != null)
 
         return new ChainInfo({
