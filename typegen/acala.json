@@ -1,6 +1,6 @@
 {
-    "outDir": "../src/chains/polkadot/types",
-    "specVersions": "https://polkadot.archive.subsquid.io/graphql",
+    "outDir": "../src/chains/acala/types",
+    "specVersions": "https://acala.archive.subsquid.io/graphql",
     "events": [
         "Balances.Transfer",
         "Balances.Endowed",
@@ -16,10 +16,8 @@
     "storage": [
         "System.Account",
         "Balances.Account",
-        "Council.Members",
-        "Council.ProposalCount",
-        "Instance1Collective.Members",
-        "Instance1Collective.ProposalCount",
+        "GeneralCouncil.Members",
+        "GeneralCouncil.ProposalCount",
         "Democracy.PublicPropCount",
         "Balances.TotalIssuance"
     ]

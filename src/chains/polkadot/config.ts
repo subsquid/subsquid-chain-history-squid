@@ -1,4 +1,4 @@
-import {ProcessorConfig} from './processorConfig'
+import {ProcessorConfig} from '../processorConfig'
 
 const config: ProcessorConfig = {
     chainName: 'polkadot',
@@ -7,9 +7,6 @@ const config: ProcessorConfig = {
         archive: 'https://polkadot.archive.subsquid.io/graphql',
         chain: 'wss://rpc.polkadot.io',
     },
-    // blockRange: {
-    //     from: 7567700,
-    // },
 }
 
 export default config

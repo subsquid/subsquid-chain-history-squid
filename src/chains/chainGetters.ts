@@ -1,4 +1,4 @@
-import {Block, ChainContext, Event} from '../types/support'
+import {Block, ChainContext, Event} from './kusama/types/support'
 
 export type ChainGetters = {
     events: {
@@ -15,7 +15,10 @@ export type ChainGetters = {
     storage: {
         getBalancesAccountBalances: StorageGetter<[Uint8Array[]], BalanceData[] | undefined>
         getSystemAccountBalances: StorageGetter<[Uint8Array[]], BalanceData[] | undefined>
-        getBalancesAccountBalancesOld?: StorageGetter<[Uint8Array[]], BalanceData[] | undefined>
+        getCouncilMembersCount: StorageGetter<[], number | undefined>
+        getCouncilProposalsCount: StorageGetter<[], number | undefined>
+        getDemocracyProposalsCount: StorageGetter<[], number | undefined>
+        getTotalIssuance: StorageGetter<[], bigint | undefined>
     }
 }
 

@@ -1,4 +1,4 @@
-import {ProcessorConfig} from './processorConfig'
+import {ProcessorConfig} from '../chains/processorConfig'
 
 const config: ProcessorConfig = {
     chainName: 'acala',

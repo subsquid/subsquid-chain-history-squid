@@ -8,18 +8,24 @@ import {
     BalancesWithdrawEvent,
     BalancesSlashedEvent,
     BalancesReserveRepatriatedEvent,
-} from '../types/kusama/events'
+} from './types/events'
 import {
     BalancesAccountStorage,
     BalancesFreeBalanceStorage,
     BalancesReservedBalanceStorage,
+    BalancesTotalIssuanceStorage,
+    CouncilMembersStorage,
+    CouncilProposalCountStorage,
+    DemocracyPublicPropCountStorage,
+    Instance1CollectiveMembersStorage,
+    Instance1CollectiveProposalCountStorage,
     SystemAccountStorage,
-} from '../types/kusama/storage'
-import {Block, ChainContext, Event} from '../types/support'
-import {UnknownVersionError} from '../utils'
-import {ChainGetters} from './chainGetters'
+} from './types/storage'
+import {Block, ChainContext, Event} from './types/support'
+import {UnknownVersionError} from '../../utils'
+import {ChainGetters} from '../chainGetters'
 
-function getBalanceSetAccount(ctx: ChainContext, event: Event) {
+export function getBalanceSetAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesBalanceSetEvent(ctx, event)
 
     if (data.isV1031) {
@@ -31,7 +37,7 @@ function getBalanceSetAccount(ctx: ChainContext, event: Event) {
     }
 }
 
-function getTransferAccounts(ctx: ChainContext, event: Event): [Uint8Array, Uint8Array] {
+export function getTransferAccounts(ctx: ChainContext, event: Event): [Uint8Array, Uint8Array] {
     const data = new BalancesTransferEvent(ctx, event)
 
     if (data.isV1020) {
@@ -45,7 +51,7 @@ function getTransferAccounts(ctx: ChainContext, event: Event): [Uint8Array, Uint
     }
 }
 
-function getEndowedAccount(ctx: ChainContext, event: Event) {
+export function getEndowedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesEndowedEvent(ctx, event)
 
     if (data.isV1050) {
@@ -57,7 +63,7 @@ function getEndowedAccount(ctx: ChainContext, event: Event) {
     }
 }
 
-function getDepositAccount(ctx: ChainContext, event: Event) {
+export function getDepositAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesDepositEvent(ctx, event)
 
     if (data.isV1032) {
@@ -69,7 +75,7 @@ function getDepositAccount(ctx: ChainContext, event: Event) {
     }
 }
 
-function getReservedAccount(ctx: ChainContext, event: Event) {
+export function getReservedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesReservedEvent(ctx, event)
 
     if (data.isV2008) {
@@ -81,7 +87,7 @@ function getReservedAccount(ctx: ChainContext, event: Event) {
     }
 }
 
-function getUnreservedAccount(ctx: ChainContext, event: Event) {
+export function getUnreservedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesUnreservedEvent(ctx, event)
 
     if (data.isV2008) {
@@ -93,7 +99,7 @@ function getUnreservedAccount(ctx: ChainContext, event: Event) {
     }
 }
 
-function getWithdrawAccount(ctx: ChainContext, event: Event) {
+export function getWithdrawAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesWithdrawEvent(ctx, event)
 
     if (data.isV9122) {
@@ -105,7 +111,7 @@ function getWithdrawAccount(ctx: ChainContext, event: Event) {
     }
 }
 
-function getSlashedAccount(ctx: ChainContext, event: Event) {
+export function getSlashedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesSlashedEvent(ctx, event)
 
     if (data.isV9122) {
@@ -117,7 +123,7 @@ function getSlashedAccount(ctx: ChainContext, event: Event) {
     }
 }
 
-function getReserveRepatriatedAccounts(ctx: ChainContext, event: Event): [Uint8Array, Uint8Array] {
+export function getReserveRepatriatedAccounts(ctx: ChainContext, event: Event): [Uint8Array, Uint8Array] {
     const data = new BalancesReserveRepatriatedEvent(ctx, event)
 
     if (data.isV2008) {
@@ -129,9 +135,9 @@ function getReserveRepatriatedAccounts(ctx: ChainContext, event: Event): [Uint8A
     }
 }
 
-async function getBalancesAccountBalances(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
+export async function getBalancesAccountBalances(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
     const storage = new BalancesAccountStorage(ctx, block)
-    if (!storage.isExists) return undefined
+    if (!storage.isExists) return getBalancesAccountBalancesOld(ctx, block, accounts)
 
     const mapData = (d: {free: bigint; reserved: bigint}) => ({free: d.free, reserved: d.reserved})
 
@@ -142,7 +148,7 @@ async function getBalancesAccountBalances(ctx: ChainContext, block: Block, accou
     }
 }
 
-async function getBalancesAccountBalancesOld(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
+export async function getBalancesAccountBalancesOld(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
     const storageFree = new BalancesFreeBalanceStorage(ctx, block)
 
     const dataFree = storageFree.isExists
@@ -158,7 +164,7 @@ async function getBalancesAccountBalancesOld(ctx: ChainContext, block: Block, ac
     return dataFree.map((f, i) => ({free: f, reserved: dataReserved[i]}))
 }
 
-async function getSystemAccountBalances(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
+export async function getSystemAccountBalances(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
     const storage = new SystemAccountStorage(ctx, block)
     if (!storage.isExists) return undefined
 
@@ -177,6 +183,72 @@ async function getSystemAccountBalances(ctx: ChainContext, block: Block, account
     }
 }
 
+export async function getCouncilMembersCount(ctx: ChainContext, block: Block) {
+    const storage = new CouncilMembersStorage(ctx, block)
+    if (!storage.isExists) return getInstance1MembersCount(ctx, block)
+
+    if (storage.isV9111) {
+        return await storage.getAsV9111().then((r) => r.length)
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+export async function getInstance1MembersCount(ctx: ChainContext, block: Block) {
+    const storage = new Instance1CollectiveMembersStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV1020) {
+        return await storage.getAsV1020().then((r) => r.length)
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+export async function getCouncilProposalsCount(ctx: ChainContext, block: Block) {
+    const storage = new CouncilProposalCountStorage(ctx, block)
+    if (!storage.isExists) return getInstance1ProposalsCount(ctx, block)
+
+    if (storage.isV9111) {
+        return await storage.getAsV9111()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+export async function getInstance1ProposalsCount(ctx: ChainContext, block: Block) {
+    const storage = new Instance1CollectiveProposalCountStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV1020) {
+        return await storage.getAsV1020()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+export async function getDemocracyProposalsCount(ctx: ChainContext, block: Block) {
+    const storage = new DemocracyPublicPropCountStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV1020) {
+        return await storage.getAsV1020()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+export async function getTotalIssuance(ctx: ChainContext, block: Block) {
+    const storage = new BalancesTotalIssuanceStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV1020) {
+        return await storage.getAsV1020()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
 const getters: ChainGetters = {
     events: {
         getBalanceSetAccount,
@@ -191,8 +263,11 @@ const getters: ChainGetters = {
     },
     storage: {
         getBalancesAccountBalances,
-        getBalancesAccountBalancesOld,
         getSystemAccountBalances,
+        getCouncilMembersCount,
+        getCouncilProposalsCount,
+        getDemocracyProposalsCount,
+        getTotalIssuance,
     },
 }
 

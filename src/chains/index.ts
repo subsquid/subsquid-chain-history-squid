@@ -1,6 +1,7 @@
-import {ChainGetters} from './chainGetters'
+import {ChainGetters} from '../chains/chainGetters'
+import {ProcessorConfig} from './processorConfig'
 
-export function getGetters(): ChainGetters {
+export function getChain(): {config: ProcessorConfig; getters: ChainGetters} {
     switch (process.env.CHAIN) {
         case 'kusama':
             return require('./kusama').default
@@ -8,6 +9,8 @@ export function getGetters(): ChainGetters {
             return require('./polkadot').default
         case 'acala':
             return require('./acala').default
+        case 'karura':
+            return require('./karura').default
         case 'moonriver':
             return require('./moonriver').default
         case 'moonbeam':

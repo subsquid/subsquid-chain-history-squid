@@ -8,11 +8,20 @@ import {
     BalancesWithdrawEvent,
     BalancesSlashedEvent,
     BalancesReserveRepatriatedEvent,
-} from '../types/polkadot/events'
-import {BalancesAccountStorage, SystemAccountStorage} from '../types/polkadot/storage'
-import {Block, ChainContext, Event} from '../types/polkadot/support'
-import {UnknownVersionError} from '../utils'
-import {ChainGetters} from './chainGetters'
+} from './types/events'
+import {
+    BalancesAccountStorage,
+    BalancesTotalIssuanceStorage,
+    CouncilMembersStorage,
+    CouncilProposalCountStorage,
+    DemocracyPublicPropCountStorage,
+    Instance1CollectiveMembersStorage,
+    Instance1CollectiveProposalCountStorage,
+    SystemAccountStorage,
+} from './types/storage'
+import {Block, ChainContext, Event} from './types/support'
+import {UnknownVersionError} from '../../utils'
+import {ChainGetters} from '../chainGetters'
 
 function getBalanceSetAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesBalanceSetEvent(ctx, event)
@@ -154,6 +163,72 @@ async function getSystemAccountBalances(ctx: ChainContext, block: Block, account
     }
 }
 
+async function getCouncilMembersCount(ctx: ChainContext, block: Block) {
+    const storage = new CouncilMembersStorage(ctx, block)
+    if (!storage.isExists) return getInstance1MembersCount(ctx, block)
+
+    if (storage.isV9110) {
+        return await storage.getAsV9110().then((r) => r.length)
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+async function getInstance1MembersCount(ctx: ChainContext, block: Block) {
+    const storage = new Instance1CollectiveMembersStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV0) {
+        return await storage.getAsV0().then((r) => r.length)
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+async function getCouncilProposalsCount(ctx: ChainContext, block: Block) {
+    const storage = new CouncilProposalCountStorage(ctx, block)
+    if (!storage.isExists) return getInstance1ProposalsCount(ctx, block)
+
+    if (storage.isV9110) {
+        return await storage.getAsV9110()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+async function getInstance1ProposalsCount(ctx: ChainContext, block: Block) {
+    const storage = new Instance1CollectiveProposalCountStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV0) {
+        return await storage.getAsV0()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+async function getDemocracyProposalsCount(ctx: ChainContext, block: Block) {
+    const storage = new DemocracyPublicPropCountStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV0) {
+        return await storage.getAsV0()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+async function getTotalIssuance(ctx: ChainContext, block: Block) {
+    const storage = new BalancesTotalIssuanceStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV0) {
+        return await storage.getAsV0()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
 const getters: ChainGetters = {
     events: {
         getBalanceSetAccount,
@@ -169,6 +244,10 @@ const getters: ChainGetters = {
     storage: {
         getBalancesAccountBalances,
         getSystemAccountBalances,
+        getCouncilMembersCount,
+        getCouncilProposalsCount,
+        getDemocracyProposalsCount,
+        getTotalIssuance,
     },
 }
 

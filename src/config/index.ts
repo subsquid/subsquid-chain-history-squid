@@ -1,4 +1,4 @@
-import { ProcessorConfig } from './processorConfig'
+import { ProcessorConfig } from '../chains/processorConfig'
 
 export function getConfig(): ProcessorConfig {
     switch (process.env.CHAIN) {

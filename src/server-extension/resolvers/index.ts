@@ -1,17 +1,17 @@
-import { Field, ObjectType, Query, Resolver } from 'type-graphql'
+import {Field, ObjectType, Query, Resolver} from 'type-graphql'
 import 'reflect-metadata'
-import type { EntityManager } from 'typeorm'
-import { CurrentChainState } from '../../model'
+import type {EntityManager} from 'typeorm'
+import {ChainState} from '../../model'
 import assert from 'assert'
-import chains from '../../chains'
-import config from '../../config/kusama'
+import chains from '../../chainsInfo'
+import config from '../../chains/kusama/config'
 
 @ObjectType()
 export class Token {
-    @Field(() => String, { nullable: false })
+    @Field(() => String, {nullable: false})
     symbol!: string
 
-    @Field(() => String, { nullable: true })
+    @Field(() => String, {nullable: true})
     decimals!: number | null
 
     constructor(props: Partial<Token>) {
@@ -21,22 +21,22 @@ export class Token {
 
 @ObjectType()
 export class ChainInfo {
-    @Field(() => Number, { nullable: true })
+    @Field(() => Number, {nullable: true})
     prefix!: number | null
 
-    @Field(() => String, { nullable: false })
+    @Field(() => String, {nullable: false})
     name!: string
 
-    @Field(() => String, { nullable: false })
+    @Field(() => String, {nullable: false})
     displayName!: string
 
-    @Field(() => [Token], { nullable: false })
+    @Field(() => [Token], {nullable: false})
     tokens!: Token[]
 
-    @Field(() => Number, { nullable: true })
+    @Field(() => Number, {nullable: true})
     paraId!: number | null
 
-    @Field(() => String, { nullable: true })
+    @Field(() => String, {nullable: true})
     relayChain!: string | null
 
     constructor(props?: Partial<ChainInfo>) {
@@ -50,25 +50,25 @@ class ChainStateObject {
         Object.assign(this, props)
     }
 
-    @Field(() => BigInt, { nullable: false })
+    @Field(() => BigInt, {nullable: false})
     tokenBalance!: bigint
 
-    @Field(() => Number, { nullable: false })
+    @Field(() => Number, {nullable: false})
     tokenHolders!: number
 
-    @Field(() => Number, { nullable: false })
+    @Field(() => Number, {nullable: false})
     councilMembers!: number
 
-    @Field(() => Number, { nullable: false })
+    @Field(() => Number, {nullable: false})
     democracyProposals!: number
 
-    @Field(() => Number, { nullable: false })
+    @Field(() => Number, {nullable: false})
     councilProposals!: number
 
-    @Field(() => Date, { nullable: false })
+    @Field(() => Date, {nullable: false})
     timestamp!: Date
 
-    @Field(() => Number, { nullable: false })
+    @Field(() => Number, {nullable: false})
     blockNumber!: number
 }
 
@@ -85,7 +85,7 @@ export class ChainInfoResolver {
             relayChain: info.relay,
             paraId: info.paraId,
             displayName: info.displayName,
-            tokens: info.tokens.map(({ symbol, decimals }) => new Token({ symbol, decimals })),
+            tokens: info.tokens.map(({symbol, decimals}) => new Token({symbol, decimals})),
         })
     }
 }
@@ -97,9 +97,9 @@ export class ChainStateResolver {
     @Query(() => ChainStateObject)
     async currentChainState(): Promise<ChainStateObject | null> {
         const manager = await this.tx()
-        const repository = manager.getRepository(CurrentChainState)
+        const repository = manager.getRepository(ChainState)
 
-        const state = await repository.findOneBy({ id: '0' })
-        return state != null ? new ChainStateObject({ ...state }) : null
+        const state = await repository.findOne({order: {blockNumber: 'DESC'}})
+        return state != null ? new ChainStateObject({...state}) : null
     }
 }

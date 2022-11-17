@@ -7,15 +7,12 @@ import {
     SubstrateBlock,
 } from '@subsquid/substrate-processor'
 import {Store, TypeormDatabase} from '@subsquid/typeorm-store'
-import {updateChainState} from './chainState'
-import {getConfig} from './config'
-import {getGetters} from './getters'
+import {getChain} from './chains'
+import {isOneDay, saveChainState} from './chainState'
 import {Account, ChainState} from './model'
-import {Block, ChainContext} from './types/support'
 import {decodeId, encodeId, getOriginAccountId} from './utils'
 
-const config = getConfig()
-const getters = getGetters()
+const {getters, config} = getChain()
 
 const processor = new SubstrateBatchProcessor()
     .setDataSource(config.dataSource)
@@ -88,10 +85,9 @@ async function processBalances(ctx: Context): Promise<void> {
             }
         }
 
-        if (block.header.timestamp - lastStateTimestamp >= SAVE_PERIOD) {
+        if (!isOneDay(lastStateTimestamp, block.header.timestamp)) {
             await saveAccounts(ctx, block.header, [...accountIds])
-            await updateChainState(ctx, block.header)
-            // await saveRegularChainState(ctx, block.header)
+            await saveChainState(ctx, block.header)
 
             lastStateTimestamp = block.header.timestamp
             accountIds.clear()
@@ -101,7 +97,6 @@ async function processBalances(ctx: Context): Promise<void> {
     const block = ctx.blocks[ctx.blocks.length - 1]
 
     await saveAccounts(ctx, block.header, [...accountIds])
-    await updateChainState(ctx, block.header)
 }
 
 async function saveAccounts(ctx: Context, block: SubstrateBlock, accountIds: string[]) {
@@ -203,14 +198,13 @@ interface Balance {
 }
 
 async function getBalances(
-    ctx: ChainContext,
-    block: Block,
+    ctx: BatchContext<unknown, unknown>,
+    block: SubstrateBlock,
     accountIds: string[]
 ): Promise<(Balance | undefined)[] | undefined> {
     const accountIdsU8 = [...accountIds].map((id) => decodeId(id))
     return (
         (await getters.storage.getSystemAccountBalances(ctx, block, accountIdsU8)) ||
-        (await getters.storage.getBalancesAccountBalances(ctx, block, accountIdsU8)) ||
-        (await getters.storage.getBalancesAccountBalancesOld?.(ctx, block, accountIdsU8))
+        (await getters.storage.getBalancesAccountBalances(ctx, block, accountIdsU8))
     )
 }

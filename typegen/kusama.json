@@ -1,5 +1,5 @@
 {
-    "outDir": "../src/types/kusama",
+    "outDir": "../src/chains/kusama/types",
     "specVersions": "https://kusama.archive.subsquid.io/graphql",
     "events": [
         "Balances.Transfer",
@@ -14,7 +14,6 @@
     ],
     "calls": [],
     "storage": [
-        "System.AccountNonce",
         "System.Account",
         "Balances.Account",
         "Council.Members",
