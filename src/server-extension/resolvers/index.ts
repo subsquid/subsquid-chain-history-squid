@@ -99,7 +99,7 @@ export class ChainStateResolver {
         const manager = await this.tx()
         const repository = manager.getRepository(ChainState)
 
-        const state = await repository.findOne({order: {blockNumber: 'DESC'}})
+        const state = await repository.findOne({where: {}, order: {blockNumber: 'DESC'}})
         return state != null ? new ChainStateObject({...state}) : null
     }
 }

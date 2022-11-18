@@ -1,0 +1,26 @@
+{
+    "outDir": "../src/chains/bifrost/types",
+    "specVersions": "https://bifrost.archive.subsquid.io/graphql",
+    "events": [
+        "Balances.Transfer",
+        "Balances.Endowed",
+        "Balances.BalanceSet",
+        "Balances.Reserved",
+        "Balances.Unreserved",
+        "Balances.ReserveRepatriated",
+        "Balances.Deposit",
+        "Balances.Withdraw",
+        "Balances.Slashed"
+    ],
+    "calls": [],
+    "storage": [
+        "System.Account",
+        "Balances.Account",
+        "Council.Members",
+        "Council.ProposalCount",
+        "Instance1Collective.Members",
+        "Instance1Collective.ProposalCount",
+        "Democracy.PublicPropCount",
+        "Balances.TotalIssuance"
+    ]
+}

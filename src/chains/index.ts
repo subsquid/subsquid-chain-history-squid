@@ -15,8 +15,6 @@ export function getChain(): {config: ProcessorConfig; getters: ChainGetters} {
             return require('./moonriver')
         case 'moonbeam':
             return require('./moonbeam')
-        case 'crust':
-            return require('./crust')
         case 'bifrost':
             return require('./bifrost')
         case 'phala':
