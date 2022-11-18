@@ -1,13 +1,10 @@
 import {ProcessorConfig} from '../processorConfig'
 
 export const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'acala',
+    prefix: 'acala',
     dataSource: {
-        archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://acala.archive.subsquid.io/graphql',
+        chain: 'wss://acala-rpc-2.aca-api.network/ws',
     },
-    // blockRange: {
-    //     from: 7567700,
-    // },
 }
