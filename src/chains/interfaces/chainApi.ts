@@ -1,6 +1,6 @@
-import {Block, ChainContext, Event} from './kusama/types/support'
+import {Block, ChainContext, Event} from '../kusama/types/support'
 
-export type ChainGetters = {
+export type ChainApi = {
     events: {
         getBalanceSetAccount: EventGetter<Uint8Array>
         getTransferAccounts: EventGetter<[Uint8Array, Uint8Array]>

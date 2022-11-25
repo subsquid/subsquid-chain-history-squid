@@ -12,7 +12,7 @@ import {isOneDay, saveChainState} from './chainState'
 import {Account, ChainState} from './model'
 import {decodeId, encodeId, getOriginAccountId} from './utils'
 
-const {getters, config} = getChain()
+const {api, config} = getChain()
 
 const processor = new SubstrateBatchProcessor()
     .setDataSource(config.dataSource)
@@ -144,47 +144,47 @@ function processBalancesEventItem(ctx: Context, item: EventItem) {
     const ids: Uint8Array[] = []
     switch (item.name) {
         case 'Balances.BalanceSet': {
-            const account = getters.events.getBalanceSetAccount(ctx, item.event)
+            const account = api.events.getBalanceSetAccount(ctx, item.event)
             ids.push(account)
             break
         }
         case 'Balances.Endowed': {
-            const account = getters.events.getEndowedAccount(ctx, item.event)
+            const account = api.events.getEndowedAccount(ctx, item.event)
             ids.push(account)
             break
         }
         case 'Balances.Deposit': {
-            const account = getters.events.getDepositAccount(ctx, item.event)
+            const account = api.events.getDepositAccount(ctx, item.event)
             ids.push(account)
             break
         }
         case 'Balances.Reserved': {
-            const account = getters.events.getReservedAccount(ctx, item.event)
+            const account = api.events.getReservedAccount(ctx, item.event)
             ids.push(account)
             break
         }
         case 'Balances.Unreserved': {
-            const account = getters.events.getUnreservedAccount(ctx, item.event)
+            const account = api.events.getUnreservedAccount(ctx, item.event)
             ids.push(account)
             break
         }
         case 'Balances.Withdraw': {
-            const account = getters.events.getWithdrawAccount(ctx, item.event)
+            const account = api.events.getWithdrawAccount(ctx, item.event)
             ids.push(account)
             break
         }
         case 'Balances.Slashed': {
-            const account = getters.events.getSlashedAccount(ctx, item.event)
+            const account = api.events.getSlashedAccount(ctx, item.event)
             ids.push(account)
             break
         }
         case 'Balances.Transfer': {
-            const accounts = getters.events.getTransferAccounts(ctx, item.event)
+            const accounts = api.events.getTransferAccounts(ctx, item.event)
             ids.push(...accounts)
             break
         }
         case 'Balances.ReserveRepatriated': {
-            const accounts = getters.events.getReserveRepatriatedAccounts(ctx, item.event)
+            const accounts = api.events.getReserveRepatriatedAccounts(ctx, item.event)
             ids.push(...accounts)
             break
         }
@@ -204,7 +204,7 @@ async function getBalances(
 ): Promise<(Balance | undefined)[] | undefined> {
     const accountIdsU8 = [...accountIds].map((id) => decodeId(id, config.prefix))
     return (
-        (await getters.storage.getSystemAccountBalances(ctx, block, accountIdsU8)) ||
-        (await getters.storage.getBalancesAccountBalances(ctx, block, accountIdsU8))
+        (await api.storage.getSystemAccountBalances(ctx, block, accountIdsU8)) ||
+        (await api.storage.getBalancesAccountBalances(ctx, block, accountIdsU8))
     )
 }

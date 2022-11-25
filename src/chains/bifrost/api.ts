@@ -12,22 +12,24 @@ import {
 import {
     BalancesAccountStorage,
     BalancesTotalIssuanceStorage,
-    CouncilCollectiveMembersStorage,
-    CouncilCollectiveProposalCountStorage,
+    CouncilMembersStorage,
+    CouncilProposalCountStorage,
     DemocracyPublicPropCountStorage,
+    Instance1CollectiveMembersStorage,
+    Instance1CollectiveProposalCountStorage,
     SystemAccountStorage,
 } from './types/storage'
 import {Block, ChainContext, Event} from './types/support'
 import {UnknownVersionError} from '../../utils'
-import {ChainGetters} from '../chainGetters'
+import {ChainApi} from '../interfaces/chainApi'
 
 function getBalanceSetAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesBalanceSetEvent(ctx, event)
 
-    if (data.isV900) {
-        return data.asV900[0]
-    } else if (data.isV1201) {
-        return data.asV1201.who
+    if (data.isV1) {
+        return data.asV1[0]
+    } else if (data.isV916) {
+        return data.asV916.who
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -36,10 +38,10 @@ function getBalanceSetAccount(ctx: ChainContext, event: Event) {
 function getTransferAccounts(ctx: ChainContext, event: Event): [Uint8Array, Uint8Array] {
     const data = new BalancesTransferEvent(ctx, event)
 
-    if (data.isV900) {
-        return [data.asV900[0], data.asV900[1]]
-    } else if (data.isV1201) {
-        return [data.asV1201.from, data.asV1201.to]
+    if (data.isV1) {
+        return [data.asV1[0], data.asV1[1]]
+    } else if (data.isV916) {
+        return [data.asV916.from, data.asV916.to]
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -48,10 +50,10 @@ function getTransferAccounts(ctx: ChainContext, event: Event): [Uint8Array, Uint
 function getEndowedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesEndowedEvent(ctx, event)
 
-    if (data.isV900) {
-        return data.asV900[0]
-    } else if (data.isV1201) {
-        return data.asV1201.account
+    if (data.isV1) {
+        return data.asV1[0]
+    } else if (data.isV916) {
+        return data.asV916.account
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -60,10 +62,10 @@ function getEndowedAccount(ctx: ChainContext, event: Event) {
 function getDepositAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesDepositEvent(ctx, event)
 
-    if (data.isV900) {
-        return data.asV900[0]
-    } else if (data.isV1201) {
-        return data.asV1201.who
+    if (data.isV1) {
+        return data.asV1[0]
+    } else if (data.isV916) {
+        return data.asV916.who
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -72,10 +74,10 @@ function getDepositAccount(ctx: ChainContext, event: Event) {
 function getReservedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesReservedEvent(ctx, event)
 
-    if (data.isV900) {
-        return data.asV900[0]
-    } else if (data.isV1201) {
-        return data.asV1201.who
+    if (data.isV1) {
+        return data.asV1[0]
+    } else if (data.isV916) {
+        return data.asV916.who
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -84,10 +86,10 @@ function getReservedAccount(ctx: ChainContext, event: Event) {
 function getUnreservedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesUnreservedEvent(ctx, event)
 
-    if (data.isV900) {
-        return data.asV900[0]
-    } else if (data.isV1201) {
-        return data.asV1201.who
+    if (data.isV1) {
+        return data.asV1[0]
+    } else if (data.isV916) {
+        return data.asV916.who
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -96,10 +98,10 @@ function getUnreservedAccount(ctx: ChainContext, event: Event) {
 function getWithdrawAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesWithdrawEvent(ctx, event)
 
-    if (data.isV1001) {
-        return data.asV1001[0]
-    } else if (data.isV1201) {
-        return data.asV1201.who
+    if (data.isV908) {
+        return data.asV908[0]
+    } else if (data.isV916) {
+        return data.asV916.who
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -108,10 +110,10 @@ function getWithdrawAccount(ctx: ChainContext, event: Event) {
 function getSlashedAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesSlashedEvent(ctx, event)
 
-    if (data.isV1001) {
-        return data.asV1001[0]
-    } else if (data.isV1201) {
-        return data.asV1201.who
+    if (data.isV908) {
+        return data.asV908[0]
+    } else if (data.isV916) {
+        return data.asV916.who
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -120,10 +122,10 @@ function getSlashedAccount(ctx: ChainContext, event: Event) {
 function getReserveRepatriatedAccounts(ctx: ChainContext, event: Event): [Uint8Array, Uint8Array] {
     const data = new BalancesReserveRepatriatedEvent(ctx, event)
 
-    if (data.isV900) {
-        return [data.asV900[0], data.asV900[1]]
-    } else if (data.isV1201) {
-        return [data.asV1201.from, data.asV1201.to]
+    if (data.isV1) {
+        return [data.asV1[0], data.asV1[1]]
+    } else if (data.isV916) {
+        return [data.asV916.from, data.asV916.to]
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
@@ -135,8 +137,8 @@ async function getBalancesAccountBalances(ctx: ChainContext, block: Block, accou
 
     const mapData = (d: {free: bigint; reserved: bigint}) => ({free: d.free, reserved: d.reserved})
 
-    if (storage.isV900) {
-        return storage.getManyAsV900(accounts).then((data) => data.map(mapData))
+    if (storage.isV1) {
+        return storage.getManyAsV1(accounts).then((data) => data.map(mapData))
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -148,30 +150,52 @@ async function getSystemAccountBalances(ctx: ChainContext, block: Block, account
 
     const mapData = (d: {data: {free: bigint; reserved: bigint}}) => ({free: d.data.free, reserved: d.data.reserved})
 
-    if (storage.isV900) {
-        return storage.getManyAsV900(accounts).then((data) => data.map(mapData))
+    if (storage.isV1) {
+        return storage.getManyAsV1(accounts).then((data) => data.map(mapData))
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
 }
 
 async function getCouncilMembersCount(ctx: ChainContext, block: Block) {
-    const storage = new CouncilCollectiveMembersStorage(ctx, block)
+    const storage = new CouncilMembersStorage(ctx, block)
+    if (!storage.isExists) return getInstance1MembersCount(ctx, block)
+
+    if (storage.isV906) {
+        return await storage.getAsV906().then((r) => r.length)
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+async function getInstance1MembersCount(ctx: ChainContext, block: Block) {
+    const storage = new Instance1CollectiveMembersStorage(ctx, block)
     if (!storage.isExists) return undefined
 
-    if (storage.isV900) {
-        return await storage.getAsV900().then((r) => r.length)
+    if (storage.isV803) {
+        return await storage.getAsV803().then((r) => r.length)
     }
 
     throw new UnknownVersionError(storage.constructor.name)
 }
 
 async function getCouncilProposalsCount(ctx: ChainContext, block: Block) {
-    const storage = new CouncilCollectiveProposalCountStorage(ctx, block)
+    const storage = new CouncilProposalCountStorage(ctx, block)
+    if (!storage.isExists) return getInstance1ProposalsCount(ctx, block)
+
+    if (storage.isV906) {
+        return await storage.getAsV906()
+    }
+
+    throw new UnknownVersionError(storage.constructor.name)
+}
+
+async function getInstance1ProposalsCount(ctx: ChainContext, block: Block) {
+    const storage = new Instance1CollectiveProposalCountStorage(ctx, block)
     if (!storage.isExists) return undefined
 
-    if (storage.isV900) {
-        return await storage.getAsV900()
+    if (storage.isV803) {
+        return await storage.getAsV803()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -181,8 +205,8 @@ async function getDemocracyProposalsCount(ctx: ChainContext, block: Block) {
     const storage = new DemocracyPublicPropCountStorage(ctx, block)
     if (!storage.isExists) return undefined
 
-    if (storage.isV900) {
-        return await storage.getAsV900()
+    if (storage.isV803) {
+        return await storage.getAsV803()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -192,14 +216,14 @@ async function getTotalIssuance(ctx: ChainContext, block: Block) {
     const storage = new BalancesTotalIssuanceStorage(ctx, block)
     if (!storage.isExists) return undefined
 
-    if (storage.isV900) {
-        return await storage.getAsV900()
+    if (storage.isV1) {
+        return await storage.getAsV1()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
 }
 
-export const getters: ChainGetters = {
+export const api: ChainApi = {
     events: {
         getBalanceSetAccount,
         getTransferAccounts,

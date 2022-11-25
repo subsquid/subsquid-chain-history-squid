@@ -21,7 +21,7 @@ import {
 } from './types/storage'
 import {Block, ChainContext, Event} from './types/support'
 import {UnknownVersionError} from '../../utils'
-import {ChainGetters} from '../chainGetters'
+import {ChainApi} from '../interfaces/chainApi'
 
 function getBalanceSetAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesBalanceSetEvent(ctx, event)
@@ -229,7 +229,7 @@ async function getTotalIssuance(ctx: ChainContext, block: Block) {
     throw new UnknownVersionError(storage.constructor.name)
 }
 
-export const getters: ChainGetters = {
+export const api: ChainApi = {
     events: {
         getBalanceSetAccount,
         getTransferAccounts,

@@ -1,4 +1,4 @@
-import {getters} from './getters'
+import {api} from './api'
 import {config} from './config'
 
-export {config, getters}
+export {config, api}

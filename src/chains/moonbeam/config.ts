@@ -1,4 +1,4 @@
-import {ProcessorConfig} from '../processorConfig'
+import {ProcessorConfig} from '../interfaces/processorConfig'
 
 export const config: ProcessorConfig = {
     chainName: 'moonbeam',

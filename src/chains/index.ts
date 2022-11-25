@@ -1,7 +1,7 @@
-import {ChainGetters} from '../chains/chainGetters'
-import {ProcessorConfig} from './processorConfig'
+import {ChainApi} from './interfaces/chainApi'
+import {ProcessorConfig} from './interfaces/processorConfig'
 
-export function getChain(): {config: ProcessorConfig; getters: ChainGetters} {
+export function getChain(): {config: ProcessorConfig; api: ChainApi} {
     switch (process.env.CHAIN) {
         case 'kusama':
             return require('./kusama')
