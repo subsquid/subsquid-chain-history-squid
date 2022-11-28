@@ -3,6 +3,10 @@ import {ProcessorConfig} from './interfaces/processorConfig'
 
 export function getChain(): {config: ProcessorConfig; api: ChainApi} {
     switch (process.env.CHAIN) {
+        // case 'crust':
+        //     return require('./crust')
+        case 'hydradx':
+            return require('./hydradx')
         case 'kusama':
             return require('./kusama')
         case 'polkadot':
