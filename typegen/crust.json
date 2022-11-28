@@ -1,0 +1,22 @@
+{
+  "outDir": "../src/chains/crust/types",
+  "specVersions": "https://crust.archive.subsquid.io/graphql",
+  "events": [
+    "Balances.Transfer",
+    "Balances.Endowed",
+    "Balances.BalanceSet",
+    "Balances.Reserved",
+    "Balances.Unreserved",
+    "Balances.ReserveRepatriated",
+    "Balances.Deposit"
+  ],
+  "calls": [],
+  "storage": [
+    "System.Account",
+    "Balances.Account",
+    "Instance1Collective.Members",
+    "Instance1Collective.ProposalCount",
+    "Democracy.PublicPropCount",
+    "Balances.TotalIssuance"
+  ]
+}
