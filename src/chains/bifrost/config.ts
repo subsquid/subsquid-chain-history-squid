@@ -5,6 +5,6 @@ export const config: ProcessorConfig = {
     prefix: 'bifrost',
     dataSource: {
         archive: 'https://bifrost.archive.subsquid.io/graphql',
-        chain: 'wss://eu.bifrost-rpc.liebi.com/ws',
+        chain: 'wss://bifrost-parachain.api.onfinality.io/public-ws',
     },
 }
