@@ -1,0 +1,17 @@
+manifestVersion: subsquid.io/v0.1
+name: moonbeam-balances
+version: 2
+description: |-
+  The very first squid from manifest
+build:
+deploy:
+  addons:
+    postgres:
+  processor:
+    env:
+      CHAIN: moonbeam
+    cmd: ["node", "lib/processor"]
+  api:
+    env:
+      CHAIN: moonbeam
+    cmd: ["npx", "squid-graphql-server"]

@@ -1,0 +1,17 @@
+manifestVersion: subsquid.io/v0.1
+name: acala-balances
+version: 2
+description: |-
+  The very first squid from manifest
+build:
+deploy:
+  addons:
+    postgres:
+  processor:
+    env:
+      CHAIN: acala
+    cmd: ["node", "lib/processor"]
+  api:
+    env:
+      CHAIN: acala
+    cmd: ["npx", "squid-graphql-server"]

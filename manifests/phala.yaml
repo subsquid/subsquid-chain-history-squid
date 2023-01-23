@@ -1,0 +1,17 @@
+manifestVersion: subsquid.io/v0.1
+name: phala-balances
+version: 2
+description: |-
+  The very first squid from manifest
+build:
+deploy:
+  addons:
+    postgres:
+  processor:
+    env:
+      CHAIN: phala
+    cmd: ["node", "lib/processor"]
+  api:
+    env:
+      CHAIN: phala
+    cmd: ["npx", "squid-graphql-server"]
