@@ -47,7 +47,6 @@ const processor = new SubstrateBatchProcessor()
     .addCall('*', {
         data: {call: {origin: true}},
     } as const)
-    .includeAllBlocks()
 
 type Item = BatchProcessorItem<typeof processor>
 type EventItem = BatchProcessorEventItem<typeof processor>
