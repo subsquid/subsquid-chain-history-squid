@@ -1,13 +1,15 @@
+import {UnknownVersionError} from '../../utils'
+import {ChainApi} from '../interfaces/chainApi'
 import {
     BalancesBalanceSetEvent,
-    BalancesTransferEvent,
-    BalancesEndowedEvent,
     BalancesDepositEvent,
+    BalancesEndowedEvent,
+    BalancesReserveRepatriatedEvent,
     BalancesReservedEvent,
+    BalancesSlashedEvent,
+    BalancesTransferEvent,
     BalancesUnreservedEvent,
     BalancesWithdrawEvent,
-    BalancesSlashedEvent,
-    BalancesReserveRepatriatedEvent,
 } from './types/events'
 import {
     BalancesAccountStorage,
@@ -20,8 +22,6 @@ import {
     SystemAccountStorage,
 } from './types/storage'
 import {Block, ChainContext, Event} from './types/support'
-import {UnknownVersionError} from '../../utils'
-import {ChainApi} from '../interfaces/chainApi'
 
 function getBalanceSetAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesBalanceSetEvent(ctx, event)
@@ -138,7 +138,7 @@ async function getBalancesAccountBalances(ctx: ChainContext, block: Block, accou
     const mapData = (d: {free: bigint; reserved: bigint}) => ({free: d.free, reserved: d.reserved})
 
     if (storage.isV49) {
-        return storage.getManyAsV49(accounts).then((data) => data.map(mapData))
+        return storage.asV49.getMany(accounts).then((data) => data.map(mapData))
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -151,7 +151,7 @@ async function getSystemAccountBalances(ctx: ChainContext, block: Block, account
     const mapData = (d: {data: {free: bigint; reserved: bigint}}) => ({free: d.data.free, reserved: d.data.reserved})
 
     if (storage.isV49) {
-        return storage.getManyAsV49(accounts).then((data) => data.map(mapData))
+        return storage.asV49.getMany(accounts).then((data) => data.map(mapData))
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -162,7 +162,7 @@ async function getCouncilMembersCount(ctx: ChainContext, block: Block) {
     if (!storage.isExists) return getInstance1MembersCount(ctx, block)
 
     if (storage.isV900) {
-        return await storage.getAsV900().then((r) => r.length)
+        return await storage.asV900.get().then((r) => r.length)
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -173,7 +173,7 @@ async function getInstance1MembersCount(ctx: ChainContext, block: Block) {
     if (!storage.isExists) return undefined
 
     if (storage.isV49) {
-        return await storage.getAsV49().then((r) => r.length)
+        return await storage.asV49.get().then((r) => r.length)
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -184,7 +184,7 @@ async function getCouncilProposalsCount(ctx: ChainContext, block: Block) {
     if (!storage.isExists) return getInstance1ProposalsCount(ctx, block)
 
     if (storage.isV900) {
-        return await storage.getAsV900()
+        return await storage.asV900.get()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -195,7 +195,7 @@ async function getInstance1ProposalsCount(ctx: ChainContext, block: Block) {
     if (!storage.isExists) return undefined
 
     if (storage.isV49) {
-        return await storage.getAsV49()
+        return await storage.asV49.get()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -206,7 +206,7 @@ async function getDemocracyProposalsCount(ctx: ChainContext, block: Block) {
     if (!storage.isExists) return undefined
 
     if (storage.isV49) {
-        return await storage.getAsV49()
+        return await storage.asV49.get()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -217,7 +217,7 @@ async function getTotalIssuance(ctx: ChainContext, block: Block) {
     if (!storage.isExists) return undefined
 
     if (storage.isV49) {
-        return await storage.getAsV49()
+        return await storage.asV49.get()
     }
 
     throw new UnknownVersionError(storage.constructor.name)

@@ -1,27 +1,27 @@
+import {UnknownVersionError} from '../../utils'
+import {ChainApi} from '../interfaces/chainApi'
 import {
     BalancesBalanceSetEvent,
-    BalancesTransferEvent,
-    BalancesEndowedEvent,
     BalancesDepositEvent,
+    BalancesEndowedEvent,
+    BalancesReserveRepatriatedEvent,
     BalancesReservedEvent,
+    BalancesSlashedEvent,
+    BalancesTransferEvent,
     BalancesUnreservedEvent,
     BalancesWithdrawEvent,
-    BalancesSlashedEvent,
-    BalancesReserveRepatriatedEvent,
 } from './types/events'
 import {
     BalancesAccountStorage,
     BalancesTotalIssuanceStorage,
+    DemocracyPublicPropCountStorage,
     GeneralCouncilMembersStorage,
     GeneralCouncilProposalCountStorage,
-    DemocracyPublicPropCountStorage,
     Instance1CollectiveMembersStorage,
     Instance1CollectiveProposalCountStorage,
     SystemAccountStorage,
 } from './types/storage'
 import {Block, ChainContext, Event} from './types/support'
-import {UnknownVersionError} from '../../utils'
-import {ChainApi} from '../interfaces/chainApi'
 
 export function getBalanceSetAccount(ctx: ChainContext, event: Event) {
     const data = new BalancesBalanceSetEvent(ctx, event)
@@ -138,7 +138,7 @@ export async function getBalancesAccountBalances(ctx: ChainContext, block: Block
     const mapData = (d: {free: bigint; reserved: bigint}) => ({free: d.free, reserved: d.reserved})
 
     if (storage.isV1000) {
-        return storage.getManyAsV1000(accounts).then((data) => data.map(mapData))
+        return storage.asV1000.getMany(accounts).then((data) => data.map(mapData))
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -151,7 +151,7 @@ export async function getSystemAccountBalances(ctx: ChainContext, block: Block, 
     const mapData = (d: {data: {free: bigint; reserved: bigint}}) => ({free: d.data.free, reserved: d.data.reserved})
 
     if (storage.isV1000) {
-        return storage.getManyAsV1000(accounts).then((data) => data.map(mapData))
+        return storage.asV1000.getMany(accounts).then((data) => data.map(mapData))
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -162,7 +162,7 @@ export async function getCouncilMembersCount(ctx: ChainContext, block: Block) {
     if (!storage.isExists) return getInstance1MembersCount(ctx, block)
 
     if (storage.isV1019) {
-        return await storage.getAsV1019().then((r) => r.length)
+        return await storage.asV1019.get().then((r) => r.length)
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -173,7 +173,7 @@ export async function getInstance1MembersCount(ctx: ChainContext, block: Block) 
     if (!storage.isExists) return undefined
 
     if (storage.isV1000) {
-        return await storage.getAsV1000().then((r) => r.length)
+        return await storage.asV1000.get().then((r) => r.length)
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -184,7 +184,7 @@ export async function getCouncilProposalsCount(ctx: ChainContext, block: Block) 
     if (!storage.isExists) return getInstance1ProposalsCount(ctx, block)
 
     if (storage.isV1019) {
-        return await storage.getAsV1019()
+        return await storage.asV1019.get()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -195,7 +195,7 @@ export async function getInstance1ProposalsCount(ctx: ChainContext, block: Block
     if (!storage.isExists) return undefined
 
     if (storage.isV1000) {
-        return await storage.getAsV1000()
+        return await storage.asV1000.get()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -206,7 +206,7 @@ export async function getDemocracyProposalsCount(ctx: ChainContext, block: Block
     if (!storage.isExists) return undefined
 
     if (storage.isV1001) {
-        return await storage.getAsV1001()
+        return await storage.asV1001.get()
     }
 
     throw new UnknownVersionError(storage.constructor.name)
@@ -217,7 +217,7 @@ export async function getTotalIssuance(ctx: ChainContext, block: Block) {
     if (!storage.isExists) return undefined
 
     if (storage.isV1000) {
-        return await storage.getAsV1000()
+        return await storage.asV1000.get()
     }
 
     throw new UnknownVersionError(storage.constructor.name)

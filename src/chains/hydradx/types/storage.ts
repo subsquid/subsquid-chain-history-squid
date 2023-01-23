@@ -1,17 +1,14 @@
 import assert from 'assert'
-import {Block, Chain, ChainContext, BlockContext, Result, Option} from './support'
+import {Block, BlockContext, Chain, ChainContext, Option, Result, StorageBase} from './support'
 import * as v100 from './v100'
 
-export class BalancesAccountStorage {
-    private readonly _chain: Chain
-    private readonly blockHash: string
+export class BalancesAccountStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Balances'
+    }
 
-    constructor(ctx: BlockContext)
-    constructor(ctx: ChainContext, block: Block)
-    constructor(ctx: BlockContext, block?: Block) {
-        block = block || ctx.block
-        this.blockHash = block.hash
-        this._chain = ctx._chain
+    protected getName() {
+        return 'Account'
     }
 
     /**
@@ -19,8 +16,8 @@ export class BalancesAccountStorage {
      * 
      *  NOTE: This is only used in the case that this pallet is used to store balances.
      */
-    get isV100() {
-        return this._chain.getStorageItemTypeHash('Balances', 'Account') === '0b3b4bf0dd7388459eba461bc7c3226bf58608c941710a714e02f33ec0f91e78'
+    get isV100(): boolean {
+        return this.getTypeHash() === '0b3b4bf0dd7388459eba461bc7c3226bf58608c941710a714e02f33ec0f91e78'
     }
 
     /**
@@ -28,210 +25,197 @@ export class BalancesAccountStorage {
      * 
      *  NOTE: This is only used in the case that this pallet is used to store balances.
      */
-    async getAsV100(key: Uint8Array): Promise<v100.AccountData> {
+    get asV100(): BalancesAccountStorageV100 {
         assert(this.isV100)
-        return this._chain.getStorage(this.blockHash, 'Balances', 'Account', key)
-    }
-
-    async getManyAsV100(keys: Uint8Array[]): Promise<(v100.AccountData)[]> {
-        assert(this.isV100)
-        return this._chain.queryStorage(this.blockHash, 'Balances', 'Account', keys.map(k => [k]))
-    }
-
-    async getAllAsV100(): Promise<(v100.AccountData)[]> {
-        assert(this.isV100)
-        return this._chain.queryStorage(this.blockHash, 'Balances', 'Account')
-    }
-
-    /**
-     * Checks whether the storage item is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getStorageItemTypeHash('Balances', 'Account') != null
+        return this as any
     }
 }
 
-export class BalancesTotalIssuanceStorage {
-    private readonly _chain: Chain
-    private readonly blockHash: string
+/**
+ *  The balance of an account.
+ * 
+ *  NOTE: This is only used in the case that this pallet is used to store balances.
+ */
+export interface BalancesAccountStorageV100 {
+    get(key: Uint8Array): Promise<v100.AccountData>
+    getAll(): Promise<v100.AccountData[]>
+    getMany(keys: Uint8Array[]): Promise<v100.AccountData[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v100.AccountData][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v100.AccountData][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v100.AccountData][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v100.AccountData][]>
+}
 
-    constructor(ctx: BlockContext)
-    constructor(ctx: ChainContext, block: Block)
-    constructor(ctx: BlockContext, block?: Block) {
-        block = block || ctx.block
-        this.blockHash = block.hash
-        this._chain = ctx._chain
+export class BalancesTotalIssuanceStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Balances'
+    }
+
+    protected getName() {
+        return 'TotalIssuance'
     }
 
     /**
      *  The total units issued in the system.
      */
-    get isV100() {
-        return this._chain.getStorageItemTypeHash('Balances', 'TotalIssuance') === 'f8ebe28eb30158172c0ccf672f7747c46a244f892d08ef2ebcbaadde34a26bc0'
+    get isV100(): boolean {
+        return this.getTypeHash() === 'f8ebe28eb30158172c0ccf672f7747c46a244f892d08ef2ebcbaadde34a26bc0'
     }
 
     /**
      *  The total units issued in the system.
      */
-    async getAsV100(): Promise<bigint> {
+    get asV100(): BalancesTotalIssuanceStorageV100 {
         assert(this.isV100)
-        return this._chain.getStorage(this.blockHash, 'Balances', 'TotalIssuance')
-    }
-
-    /**
-     * Checks whether the storage item is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getStorageItemTypeHash('Balances', 'TotalIssuance') != null
+        return this as any
     }
 }
 
-export class CouncilMembersStorage {
-    private readonly _chain: Chain
-    private readonly blockHash: string
+/**
+ *  The total units issued in the system.
+ */
+export interface BalancesTotalIssuanceStorageV100 {
+    get(): Promise<bigint>
+}
 
-    constructor(ctx: BlockContext)
-    constructor(ctx: ChainContext, block: Block)
-    constructor(ctx: BlockContext, block?: Block) {
-        block = block || ctx.block
-        this.blockHash = block.hash
-        this._chain = ctx._chain
+export class CouncilMembersStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Council'
+    }
+
+    protected getName() {
+        return 'Members'
     }
 
     /**
      *  The current members of the collective. This is stored sorted (just by value).
      */
-    get isV108() {
-        return this._chain.getStorageItemTypeHash('Council', 'Members') === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
+    get isV108(): boolean {
+        return this.getTypeHash() === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
     }
 
     /**
      *  The current members of the collective. This is stored sorted (just by value).
      */
-    async getAsV108(): Promise<Uint8Array[]> {
+    get asV108(): CouncilMembersStorageV108 {
         assert(this.isV108)
-        return this._chain.getStorage(this.blockHash, 'Council', 'Members')
-    }
-
-    /**
-     * Checks whether the storage item is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getStorageItemTypeHash('Council', 'Members') != null
+        return this as any
     }
 }
 
-export class CouncilProposalCountStorage {
-    private readonly _chain: Chain
-    private readonly blockHash: string
+/**
+ *  The current members of the collective. This is stored sorted (just by value).
+ */
+export interface CouncilMembersStorageV108 {
+    get(): Promise<Uint8Array[]>
+}
 
-    constructor(ctx: BlockContext)
-    constructor(ctx: ChainContext, block: Block)
-    constructor(ctx: BlockContext, block?: Block) {
-        block = block || ctx.block
-        this.blockHash = block.hash
-        this._chain = ctx._chain
+export class CouncilProposalCountStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Council'
+    }
+
+    protected getName() {
+        return 'ProposalCount'
     }
 
     /**
      *  Proposals so far.
      */
-    get isV108() {
-        return this._chain.getStorageItemTypeHash('Council', 'ProposalCount') === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+    get isV108(): boolean {
+        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
     }
 
     /**
      *  Proposals so far.
      */
-    async getAsV108(): Promise<number> {
+    get asV108(): CouncilProposalCountStorageV108 {
         assert(this.isV108)
-        return this._chain.getStorage(this.blockHash, 'Council', 'ProposalCount')
-    }
-
-    /**
-     * Checks whether the storage item is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getStorageItemTypeHash('Council', 'ProposalCount') != null
+        return this as any
     }
 }
 
-export class DemocracyPublicPropCountStorage {
-    private readonly _chain: Chain
-    private readonly blockHash: string
+/**
+ *  Proposals so far.
+ */
+export interface CouncilProposalCountStorageV108 {
+    get(): Promise<number>
+}
 
-    constructor(ctx: BlockContext)
-    constructor(ctx: ChainContext, block: Block)
-    constructor(ctx: BlockContext, block?: Block) {
-        block = block || ctx.block
-        this.blockHash = block.hash
-        this._chain = ctx._chain
+export class DemocracyPublicPropCountStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Democracy'
+    }
+
+    protected getName() {
+        return 'PublicPropCount'
     }
 
     /**
      *  The number of (public) proposals that have been made so far.
      */
-    get isV108() {
-        return this._chain.getStorageItemTypeHash('Democracy', 'PublicPropCount') === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+    get isV108(): boolean {
+        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
     }
 
     /**
      *  The number of (public) proposals that have been made so far.
      */
-    async getAsV108(): Promise<number> {
+    get asV108(): DemocracyPublicPropCountStorageV108 {
         assert(this.isV108)
-        return this._chain.getStorage(this.blockHash, 'Democracy', 'PublicPropCount')
-    }
-
-    /**
-     * Checks whether the storage item is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getStorageItemTypeHash('Democracy', 'PublicPropCount') != null
+        return this as any
     }
 }
 
-export class SystemAccountStorage {
-    private readonly _chain: Chain
-    private readonly blockHash: string
+/**
+ *  The number of (public) proposals that have been made so far.
+ */
+export interface DemocracyPublicPropCountStorageV108 {
+    get(): Promise<number>
+}
 
-    constructor(ctx: BlockContext)
-    constructor(ctx: ChainContext, block: Block)
-    constructor(ctx: BlockContext, block?: Block) {
-        block = block || ctx.block
-        this.blockHash = block.hash
-        this._chain = ctx._chain
+export class SystemAccountStorage extends StorageBase {
+    protected getPrefix() {
+        return 'System'
+    }
+
+    protected getName() {
+        return 'Account'
     }
 
     /**
      *  The full account information for a particular account ID.
      */
-    get isV100() {
-        return this._chain.getStorageItemTypeHash('System', 'Account') === '1ddc7ade926221442c388ee4405a71c9428e548fab037445aaf4b3a78f4735c1'
+    get isV100(): boolean {
+        return this.getTypeHash() === '1ddc7ade926221442c388ee4405a71c9428e548fab037445aaf4b3a78f4735c1'
     }
 
     /**
      *  The full account information for a particular account ID.
      */
-    async getAsV100(key: Uint8Array): Promise<v100.AccountInfo> {
+    get asV100(): SystemAccountStorageV100 {
         assert(this.isV100)
-        return this._chain.getStorage(this.blockHash, 'System', 'Account', key)
+        return this as any
     }
+}
 
-    async getManyAsV100(keys: Uint8Array[]): Promise<(v100.AccountInfo)[]> {
-        assert(this.isV100)
-        return this._chain.queryStorage(this.blockHash, 'System', 'Account', keys.map(k => [k]))
-    }
-
-    async getAllAsV100(): Promise<(v100.AccountInfo)[]> {
-        assert(this.isV100)
-        return this._chain.queryStorage(this.blockHash, 'System', 'Account')
-    }
-
-    /**
-     * Checks whether the storage item is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getStorageItemTypeHash('System', 'Account') != null
-    }
+/**
+ *  The full account information for a particular account ID.
+ */
+export interface SystemAccountStorageV100 {
+    get(key: Uint8Array): Promise<v100.AccountInfo>
+    getAll(): Promise<v100.AccountInfo[]>
+    getMany(keys: Uint8Array[]): Promise<v100.AccountInfo[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v100.AccountInfo][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v100.AccountInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v100.AccountInfo][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v100.AccountInfo][]>
 }

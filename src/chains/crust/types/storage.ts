@@ -1,6 +1,6 @@
 import assert from 'assert'
 import {Block, BlockContext, Chain, ChainContext, Option, Result, StorageBase} from './support'
-import * as v2000 from './v2000'
+import * as v1 from './v1'
 
 export class BalancesAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -16,7 +16,7 @@ export class BalancesAccountStorage extends StorageBase {
      * 
      *  NOTE: This is only used in the case that this pallet is used to store balances.
      */
-    get isV2000(): boolean {
+    get isV1(): boolean {
         return this.getTypeHash() === '0b3b4bf0dd7388459eba461bc7c3226bf58608c941710a714e02f33ec0f91e78'
     }
 
@@ -25,8 +25,8 @@ export class BalancesAccountStorage extends StorageBase {
      * 
      *  NOTE: This is only used in the case that this pallet is used to store balances.
      */
-    get asV2000(): BalancesAccountStorageV2000 {
-        assert(this.isV2000)
+    get asV1(): BalancesAccountStorageV1 {
+        assert(this.isV1)
         return this as any
     }
 }
@@ -36,18 +36,18 @@ export class BalancesAccountStorage extends StorageBase {
  * 
  *  NOTE: This is only used in the case that this pallet is used to store balances.
  */
-export interface BalancesAccountStorageV2000 {
-    get(key: Uint8Array): Promise<v2000.AccountData>
-    getAll(): Promise<v2000.AccountData[]>
-    getMany(keys: Uint8Array[]): Promise<v2000.AccountData[]>
+export interface BalancesAccountStorageV1 {
+    get(key: Uint8Array): Promise<v1.AccountData>
+    getAll(): Promise<v1.AccountData[]>
+    getMany(keys: Uint8Array[]): Promise<v1.AccountData[]>
     getKeys(): Promise<Uint8Array[]>
     getKeys(key: Uint8Array): Promise<Uint8Array[]>
     getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
     getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
-    getPairs(): Promise<[k: Uint8Array, v: v2000.AccountData][]>
-    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v2000.AccountData][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v2000.AccountData][]>
-    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v2000.AccountData][]>
+    getPairs(): Promise<[k: Uint8Array, v: v1.AccountData][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v1.AccountData][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v1.AccountData][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.AccountData][]>
 }
 
 export class BalancesTotalIssuanceStorage extends StorageBase {
@@ -62,15 +62,15 @@ export class BalancesTotalIssuanceStorage extends StorageBase {
     /**
      *  The total units issued in the system.
      */
-    get isV2000(): boolean {
+    get isV1(): boolean {
         return this.getTypeHash() === 'f8ebe28eb30158172c0ccf672f7747c46a244f892d08ef2ebcbaadde34a26bc0'
     }
 
     /**
      *  The total units issued in the system.
      */
-    get asV2000(): BalancesTotalIssuanceStorageV2000 {
-        assert(this.isV2000)
+    get asV1(): BalancesTotalIssuanceStorageV1 {
+        assert(this.isV1)
         return this as any
     }
 }
@@ -78,7 +78,7 @@ export class BalancesTotalIssuanceStorage extends StorageBase {
 /**
  *  The total units issued in the system.
  */
-export interface BalancesTotalIssuanceStorageV2000 {
+export interface BalancesTotalIssuanceStorageV1 {
     get(): Promise<bigint>
 }
 
@@ -94,15 +94,15 @@ export class DemocracyPublicPropCountStorage extends StorageBase {
     /**
      *  The number of (public) proposals that have been made so far.
      */
-    get isV2000(): boolean {
+    get isV15(): boolean {
         return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
     }
 
     /**
      *  The number of (public) proposals that have been made so far.
      */
-    get asV2000(): DemocracyPublicPropCountStorageV2000 {
-        assert(this.isV2000)
+    get asV15(): DemocracyPublicPropCountStorageV15 {
+        assert(this.isV15)
         return this as any
     }
 }
@@ -110,13 +110,13 @@ export class DemocracyPublicPropCountStorage extends StorageBase {
 /**
  *  The number of (public) proposals that have been made so far.
  */
-export interface DemocracyPublicPropCountStorageV2000 {
+export interface DemocracyPublicPropCountStorageV15 {
     get(): Promise<number>
 }
 
-export class GeneralCouncilMembersStorage extends StorageBase {
+export class Instance1CollectiveMembersStorage extends StorageBase {
     protected getPrefix() {
-        return 'GeneralCouncil'
+        return 'Instance1Collective'
     }
 
     protected getName() {
@@ -126,15 +126,15 @@ export class GeneralCouncilMembersStorage extends StorageBase {
     /**
      *  The current members of the collective. This is stored sorted (just by value).
      */
-    get isV2000(): boolean {
+    get isV15(): boolean {
         return this.getTypeHash() === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
     }
 
     /**
      *  The current members of the collective. This is stored sorted (just by value).
      */
-    get asV2000(): GeneralCouncilMembersStorageV2000 {
-        assert(this.isV2000)
+    get asV15(): Instance1CollectiveMembersStorageV15 {
+        assert(this.isV15)
         return this as any
     }
 }
@@ -142,13 +142,13 @@ export class GeneralCouncilMembersStorage extends StorageBase {
 /**
  *  The current members of the collective. This is stored sorted (just by value).
  */
-export interface GeneralCouncilMembersStorageV2000 {
+export interface Instance1CollectiveMembersStorageV15 {
     get(): Promise<Uint8Array[]>
 }
 
-export class GeneralCouncilProposalCountStorage extends StorageBase {
+export class Instance1CollectiveProposalCountStorage extends StorageBase {
     protected getPrefix() {
-        return 'GeneralCouncil'
+        return 'Instance1Collective'
     }
 
     protected getName() {
@@ -158,15 +158,15 @@ export class GeneralCouncilProposalCountStorage extends StorageBase {
     /**
      *  Proposals so far.
      */
-    get isV2000(): boolean {
+    get isV15(): boolean {
         return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
     }
 
     /**
      *  Proposals so far.
      */
-    get asV2000(): GeneralCouncilProposalCountStorageV2000 {
-        assert(this.isV2000)
+    get asV15(): Instance1CollectiveProposalCountStorageV15 {
+        assert(this.isV15)
         return this as any
     }
 }
@@ -174,7 +174,7 @@ export class GeneralCouncilProposalCountStorage extends StorageBase {
 /**
  *  Proposals so far.
  */
-export interface GeneralCouncilProposalCountStorageV2000 {
+export interface Instance1CollectiveProposalCountStorageV15 {
     get(): Promise<number>
 }
 
@@ -190,15 +190,15 @@ export class SystemAccountStorage extends StorageBase {
     /**
      *  The full account information for a particular account ID.
      */
-    get isV2000(): boolean {
-        return this.getTypeHash() === '1ddc7ade926221442c388ee4405a71c9428e548fab037445aaf4b3a78f4735c1'
+    get isV1(): boolean {
+        return this.getTypeHash() === '73070b537f1805475b37167271b33ac7fd6ffad8ba62da08bc14937a017b8bb2'
     }
 
     /**
      *  The full account information for a particular account ID.
      */
-    get asV2000(): SystemAccountStorageV2000 {
-        assert(this.isV2000)
+    get asV1(): SystemAccountStorageV1 {
+        assert(this.isV1)
         return this as any
     }
 }
@@ -206,16 +206,16 @@ export class SystemAccountStorage extends StorageBase {
 /**
  *  The full account information for a particular account ID.
  */
-export interface SystemAccountStorageV2000 {
-    get(key: Uint8Array): Promise<v2000.AccountInfo>
-    getAll(): Promise<v2000.AccountInfo[]>
-    getMany(keys: Uint8Array[]): Promise<v2000.AccountInfo[]>
+export interface SystemAccountStorageV1 {
+    get(key: Uint8Array): Promise<v1.AccountInfo>
+    getAll(): Promise<v1.AccountInfo[]>
+    getMany(keys: Uint8Array[]): Promise<v1.AccountInfo[]>
     getKeys(): Promise<Uint8Array[]>
     getKeys(key: Uint8Array): Promise<Uint8Array[]>
     getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
     getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
-    getPairs(): Promise<[k: Uint8Array, v: v2000.AccountInfo][]>
-    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v2000.AccountInfo][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v2000.AccountInfo][]>
-    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v2000.AccountInfo][]>
+    getPairs(): Promise<[k: Uint8Array, v: v1.AccountInfo][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v1.AccountInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v1.AccountInfo][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.AccountInfo][]>
 }
